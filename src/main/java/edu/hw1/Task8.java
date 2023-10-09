@@ -21,14 +21,12 @@ public final class Task8 {
                 if (board[i][j] == EMPTY) {
                     continue;
                 }
+                // There is no need to check for knights at i - 1, i - 2 because if there are any knights there,
+                // a return would've occurred when visiting those files and the loop wouldn't have reached this iteration
                 if (hasKnight(board, i + 2, j + 1)
                         || hasKnight(board, i + 2, j - 1)
-                        || hasKnight(board, i - 2, j + 1)
-                        || hasKnight(board, i - 2, j - 1)
                         || hasKnight(board, i + 1, j + 2)
-                        || hasKnight(board, i + 1, j - 2)
-                        || hasKnight(board, i - 1, j - 2)
-                        || hasKnight(board, i - 1, j + 2)) {
+                        || hasKnight(board, i + 1, j - 2)) {
                     return false;
                 }
             }
