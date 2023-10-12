@@ -126,6 +126,5 @@ public class Task1Test {
     public void overflow() {
         assertError("1" + "0".repeat(19) + ":00");
         assertError("1" + "0".repeat(18) + ":00");
-        assertError("00:1" + "0".repeat(19));
     }
 }

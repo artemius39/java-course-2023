@@ -52,10 +52,7 @@ public final class Task1 {
         if (!secondsStr.matches("^\\d{2}$")) {
             return ERROR;
         }
-        try {
-            return Long.parseLong(secondsStr);
-        } catch (NumberFormatException ignored) {
-            return ERROR;
-        }
+        // seconds take up exactly 2 digits so overflow is impossible
+        return Long.parseLong(secondsStr);
     }
 }
