@@ -9,14 +9,13 @@ public final class Task4 {
     public static String fixString(String broken) {
         Objects.requireNonNull(broken);
 
-        StringBuilder sb = new StringBuilder(broken.length());
+        char[] chars = broken.toCharArray();
         for (int i = 0; i + 1 < broken.length(); i += 2) {
-            sb.append(broken.charAt(i + 1)).append(broken.charAt(i));
-        }
-        if (broken.length() % 2 == 1) {
-            sb.append(broken.charAt(broken.length() - 1));
+            char tmp = chars[i];
+            chars[i] = chars[i + 1];
+            chars[i + 1] = tmp;
         }
 
-        return sb.toString();
+        return new String(chars);
     }
 }
