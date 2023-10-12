@@ -120,4 +120,12 @@ public class Task1Test {
     public void spaces() {
         assertError("   12:00 ");
     }
+
+    @Test
+    @DisplayName("Overflow")
+    public void overflow() {
+        assertError("1" + "0".repeat(19) + ":00");
+        assertError("1" + "0".repeat(18) + ":00");
+        assertError("00:1" + "0".repeat(19));
+    }
 }

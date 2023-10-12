@@ -18,18 +18,44 @@ public final class Task1 {
             return ERROR;
         }
 
-        String minutesStr = minutesAndSeconds[0];
-        String secondsStr = minutesAndSeconds[1];
-        if (!minutesStr.matches("^\\d{2,}$") || !secondsStr.matches("^\\d{2}$")) {
+        long minutes = getMinutes(minutesAndSeconds[0]);
+        if (minutes == ERROR) {
+            return ERROR;
+        }
+        long seconds = getSeconds(minutesAndSeconds[1]);
+        if (seconds == ERROR || seconds >= SECONDS_PER_MINUTE) {
             return ERROR;
         }
 
-        long minutes = Long.parseLong(minutesStr);
-        long seconds = Long.parseLong(secondsStr);
-        if (seconds >= SECONDS_PER_MINUTE) {
-            return ERROR;
+        long result;
+        try {
+            result = StrictMath.addExact(StrictMath.multiplyExact(minutes, SECONDS_PER_MINUTE), seconds);
+        } catch (ArithmeticException ignored) {
+            result = ERROR;
         }
 
-        return minutes * SECONDS_PER_MINUTE + seconds;
+        return result;
+    }
+
+    private static long getMinutes(String minutesStr) {
+        if (!minutesStr.matches("^\\d{2,}$")) {
+            return ERROR;
+        }
+        try {
+            return Long.parseLong(minutesStr);
+        } catch (NumberFormatException ignored) {
+            return ERROR;
+        }
+    }
+
+    private static long getSeconds(String secondsStr) {
+        if (!secondsStr.matches("^\\d{2}$")) {
+            return ERROR;
+        }
+        try {
+            return Long.parseLong(secondsStr);
+        } catch (NumberFormatException ignored) {
+            return ERROR;
+        }
     }
 }
