@@ -5,11 +5,13 @@ public interface UserInterface {
 
     char askForAGuess(String word, int i);
 
-    void victoryMessage(String answer);
+    void victoryMessage();
 
-    void lossMessage(String answer);
+    void lossMessage();
 
     void successfulGuessMessage();
 
     void unsuccessfulGuessMessage();
+
+    void revealAnswer(String answer);
 }

@@ -74,7 +74,7 @@ class HangmanSessionTest {
         String word = session.getWord();
 
         assertThat(result).isEqualTo(GuessResult.LOSS);
-        assertThat(word).isEqualTo("bibaboba");
+        assertThat(word).isEqualTo("*".repeat(8));
     }
 
     @Test
@@ -94,7 +94,7 @@ class HangmanSessionTest {
         assertThat(result2).isEqualTo(GuessResult.INCORRECT);
         assertThat(word2).isEqualTo("a*");
         assertThat(result3).isEqualTo(GuessResult.LOSS);
-        assertThat(word3).isEqualTo("ab");
+        assertThat(word3).isEqualTo("a*");
     }
 
     @Test

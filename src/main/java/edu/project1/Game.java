@@ -48,7 +48,7 @@ public class Game {
         while (true) {
             char guess = userInterface.askForAGuess(session.getWord(), session.mistakesAllowed());
             if (guess == UserInterface.GIVE_UP_CHAR) {
-                lose();
+                userInterface.lossMessage();
                 break;
             }
 
@@ -61,22 +61,15 @@ public class Game {
             }
 
             if (guessResult == GuessResult.VICTORY) {
-                win();
+                userInterface.victoryMessage();
                 break;
             }
             if (guessResult == GuessResult.LOSS) {
-                lose();
+                userInterface.lossMessage();
                 break;
             }
         }
-    }
-
-    private void win() {
-        userInterface.victoryMessage(session.getWord());
-    }
-
-    private void lose() {
-        userInterface.lossMessage(session.getWord());
+        userInterface.revealAnswer(session.getAnswer());
     }
 
     private boolean isCorrect(GuessResult guessResult) {

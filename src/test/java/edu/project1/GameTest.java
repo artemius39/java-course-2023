@@ -14,6 +14,7 @@ class GameTest {
         private static int victoryCount = 0;
         private static int correctCount = 0;
         private static int incorrectCount = 0;
+        private static int answerRevealCount = 0;
 
         public static int getLossCount() {
             return lossCount;
@@ -31,6 +32,10 @@ class GameTest {
             return incorrectCount;
         }
 
+        public static int getAnswerRevealCount() {
+            return answerRevealCount;
+        }
+
         private final String guesses;
         private int index;
 
@@ -40,7 +45,7 @@ class GameTest {
         }
 
         public static void resetCounters() {
-            lossCount = victoryCount = correctCount = incorrectCount = 0;
+            answerRevealCount = lossCount = victoryCount = correctCount = incorrectCount = 0;
         }
 
         @Override
@@ -49,13 +54,18 @@ class GameTest {
         }
 
         @Override
-        public void victoryMessage(String answer) {
+        public void victoryMessage() {
             victoryCount++;
         }
 
         @Override
-        public void lossMessage(String answer) {
+        public void lossMessage() {
             lossCount++;
+        }
+
+        @Override
+        public void revealAnswer(String answer) {
+            answerRevealCount++;
         }
 
         @Override
@@ -148,5 +158,41 @@ class GameTest {
         game.run();
 
         assertCalls(4, 3, 1, 0);
+    }
+
+    @Test
+    @DisplayName("Answer is revealed on victory")
+    void answerRevealOnVictory() {
+        Game game = new Game(() -> "a", 0, new CallCountingUI("a"));
+        CallCountingUI.resetCounters();
+
+        game.run();
+        int answerReveals = CallCountingUI.getAnswerRevealCount();
+
+        assertThat(answerReveals).isOne();
+    }
+
+    @Test
+    @DisplayName("Answer is revealed on loss")
+    void answerRevealOnLoss() {
+        Game game = new Game(() -> "a", 0, new CallCountingUI("b"));
+        CallCountingUI.resetCounters();
+
+        game.run();
+        int answerReveals = CallCountingUI.getAnswerRevealCount();
+
+        assertThat(answerReveals).isOne();
+    }
+
+    @Test
+    @DisplayName("Answer is revealed on give up")
+    void answerRevealOnGiveUp() {
+        Game game = new Game(() -> "a", 0, new CallCountingUI("#"));
+        CallCountingUI.resetCounters();
+
+        game.run();
+        int answerReveals = CallCountingUI.getAnswerRevealCount();
+
+        assertThat(answerReveals).isOne();
     }
 }

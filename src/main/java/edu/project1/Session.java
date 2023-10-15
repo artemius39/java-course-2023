@@ -8,4 +8,6 @@ public interface Session {
     String getWord();
 
     int mistakesAllowed();
+
+    String getAnswer();
 }

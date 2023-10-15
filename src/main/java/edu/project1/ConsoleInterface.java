@@ -46,15 +46,13 @@ public class ConsoleInterface implements UserInterface {
     }
 
     @Override
-    public void victoryMessage(String answer) {
+    public void victoryMessage() {
         System.out.println("You win!!!");
-        System.out.println("The answer was '" + answer + "'");
     }
 
     @Override
-    public void lossMessage(String answer) {
+    public void lossMessage() {
         System.out.println("You lose :(");
-        System.out.println("The answer was '" + answer + "'");
     }
 
     @Override
@@ -65,5 +63,10 @@ public class ConsoleInterface implements UserInterface {
     @Override
     public void unsuccessfulGuessMessage() {
         System.out.println("Your guess is incorrect :(");
+    }
+
+    @Override
+    public void revealAnswer(String answer) {
+        System.out.println("The answer was '" + answer + "'");
     }
 }

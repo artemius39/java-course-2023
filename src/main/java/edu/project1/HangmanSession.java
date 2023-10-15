@@ -53,9 +53,6 @@ public class HangmanSession implements Session {
 
     @Override
     public String getWord() {
-        if (lost()) {
-            return word;
-        }
         char[] chars = word.toCharArray();
 
         for (int i = 0; i < word.length(); i++) {
@@ -65,6 +62,11 @@ public class HangmanSession implements Session {
         }
 
         return new String(chars);
+    }
+
+    @Override
+    public String getAnswer() {
+        return word;
     }
 
     @Override
