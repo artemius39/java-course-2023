@@ -1,10 +1,12 @@
 package edu.project1;
 
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
 
 public class HangmanSession implements Session {
     private final String word;
-    private final boolean[] wasGuessed;
+    private final Set<Character> guessedLetters;
     private int mistakesAllowed;
 
     public HangmanSession(String word, int mistakesAllowed) {
@@ -15,7 +17,7 @@ public class HangmanSession implements Session {
 
         this.word = word;
         this.mistakesAllowed = mistakesAllowed;
-        wasGuessed = new boolean[word.length()];
+        guessedLetters = new HashSet<>();
     }
 
     @Override
@@ -28,11 +30,11 @@ public class HangmanSession implements Session {
         boolean allGuessed = true;
 
         for (int i = 0; i < word.length(); i++) {
-            if (!wasGuessed[i] && word.charAt(i) == guess) {
+            char ch = word.charAt(i);
+            if (ch == guess && guessedLetters.add(ch)) {
                 successfulGuess = true;
-                wasGuessed[i] = true;
             }
-            allGuessed = allGuessed && wasGuessed[i];
+            allGuessed = allGuessed && guessedLetters.contains(ch);
         }
 
         if (!successfulGuess && allGuessed) {
@@ -56,7 +58,7 @@ public class HangmanSession implements Session {
         char[] chars = word.toCharArray();
 
         for (int i = 0; i < word.length(); i++) {
-            if (!wasGuessed[i]) {
+            if (!guessedLetters.contains(word.charAt(i))) {
                 chars[i] = HIDDEN;
             }
         }
