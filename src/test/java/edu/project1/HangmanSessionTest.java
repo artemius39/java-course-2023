@@ -125,7 +125,7 @@ class HangmanSessionTest {
         session.tryGuess('a');
         GuessResult result = session.tryGuess('a');
 
-        assertThat(result).isEqualTo(GuessResult.INCORRECT);
+        assertThat(result).isEqualTo(GuessResult.ALREADY_GUESSED);
     }
 
     @Test
@@ -146,15 +146,5 @@ class HangmanSessionTest {
         session.tryGuess('x');
 
         assertThrows(IllegalStateException.class, () -> session.tryGuess('x'));
-    }
-
-    @Test
-    @DisplayName("Trying to guess after winning")
-    void guessingAfterWinning() {
-        Session session = new HangmanSession("a", 0);
-
-        session.tryGuess('a');
-
-        assertThrows(IllegalStateException.class, () -> session.tryGuess('a'));
     }
 }

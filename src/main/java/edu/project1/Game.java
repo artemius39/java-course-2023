@@ -31,7 +31,6 @@ public class Game {
     }
 
 
-
     private boolean invalidWord(String word) {
         if (word.isEmpty()) {
             return true;
@@ -56,20 +55,27 @@ public class Game {
 
             if (isCorrect(guessResult)) {
                 userInterface.successfulGuessMessage();
-            } else {
+            } else if (isIncorrect(guessResult)) {
                 userInterface.unsuccessfulGuessMessage();
             }
 
-            if (guessResult == GuessResult.VICTORY) {
+            if (guessResult == GuessResult.ALREADY_GUESSED) {
+                userInterface.alreadyGuessedMessage();
+            } else if (guessResult == GuessResult.ALREADY_FAILED) {
+                userInterface.alreadyFailedMessage();
+            } else if (guessResult == GuessResult.VICTORY) {
                 userInterface.victoryMessage();
                 break;
-            }
-            if (guessResult == GuessResult.LOSS) {
+            } else if (guessResult == GuessResult.LOSS) {
                 userInterface.lossMessage();
                 break;
             }
         }
         userInterface.revealAnswer(session.getAnswer());
+    }
+
+    private boolean isIncorrect(GuessResult guessResult) {
+        return guessResult == GuessResult.LOSS || guessResult == GuessResult.INCORRECT;
     }
 
     private boolean isCorrect(GuessResult guessResult) {

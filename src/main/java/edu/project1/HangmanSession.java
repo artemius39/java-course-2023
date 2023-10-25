@@ -7,6 +7,7 @@ import java.util.Set;
 public class HangmanSession implements Session {
     private final String word;
     private final Set<Character> guessedLetters;
+    private final Set<Character> failedGuesses;
     private int mistakesAllowed;
 
     public HangmanSession(String word, int mistakesAllowed) {
@@ -17,7 +18,8 @@ public class HangmanSession implements Session {
 
         this.word = word;
         this.mistakesAllowed = mistakesAllowed;
-        guessedLetters = new HashSet<>();
+        this.guessedLetters = new HashSet<>();
+        this.failedGuesses = new HashSet<>();
     }
 
     @Override
@@ -25,14 +27,21 @@ public class HangmanSession implements Session {
         if (lost()) {
             throw new IllegalStateException("Trying to guess after losing");
         }
+        if (guessedLetters.contains(guess)) {
+            return GuessResult.ALREADY_GUESSED;
+        }
+        if (failedGuesses.contains(guess)) {
+            return GuessResult.ALREADY_FAILED;
+        }
 
         boolean successfulGuess = false;
         boolean allGuessed = true;
 
         for (int i = 0; i < word.length(); i++) {
             char ch = word.charAt(i);
-            if (ch == guess && guessedLetters.add(ch)) {
+            if (ch == guess) {
                 successfulGuess = true;
+                guessedLetters.add(ch);
             }
             allGuessed = allGuessed && guessedLetters.contains(ch);
         }
@@ -43,10 +52,9 @@ public class HangmanSession implements Session {
         if (successfulGuess) {
             return allGuessed ? GuessResult.VICTORY : GuessResult.CORRECT;
         }
-        if (mistakesAllowed-- == 0) {
-            return GuessResult.LOSS;
-        }
-        return GuessResult.INCORRECT;
+
+        failedGuesses.add(guess);
+        return mistakesAllowed-- == 0 ? GuessResult.LOSS : GuessResult.INCORRECT;
     }
 
     private boolean lost() {

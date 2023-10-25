@@ -1,14 +1,11 @@
 package edu.project1;
 
-import java.util.HashSet;
 import java.util.Scanner;
-import java.util.Set;
 
 @SuppressWarnings("RegexpSingleLineJava")
 public class ConsoleInterface implements UserInterface {
     private static final String GIVE_UP_COMMAND = "give up";
     private final Scanner in;
-    private final Set<Character> triedLetters;
 
     public ConsoleInterface() {
         this(new Scanner(System.in));
@@ -16,7 +13,6 @@ public class ConsoleInterface implements UserInterface {
 
     ConsoleInterface(Scanner in) {
         this.in = in;
-        triedLetters = new HashSet<>();
     }
 
     @Override
@@ -37,12 +33,7 @@ public class ConsoleInterface implements UserInterface {
             if (input.length() == 1) {
                 char guess = input.charAt(0);
                 if (Character.isLowerCase(guess)) {
-                    if (triedLetters.add(guess)) {
-                        return guess;
-                    } else {
-                        System.out.println("You already tried this letter.");
-                        continue;
-                    }
+                    return guess;
                 }
             }
 
@@ -77,5 +68,15 @@ public class ConsoleInterface implements UserInterface {
     @Override
     public void revealAnswer(String answer) {
         System.out.println("The answer was '" + answer + "'");
+    }
+
+    @Override
+    public void alreadyGuessedMessage() {
+        System.out.println("You already guessed this letter!");
+    }
+
+    @Override
+    public void alreadyFailedMessage() {
+        System.out.println("You already tried to guess this letter, the guess was incorrect");
     }
 }

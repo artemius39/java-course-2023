@@ -44,15 +44,4 @@ class ConsoleInterfaceTest {
 
         assertThat(guess).isEqualTo(UserInterface.GIVE_UP_CHAR);
     }
-
-    @Test
-    @DisplayName("Forgive entering the same letter")
-    void enteringTheSameLetterMultipleTimes() {
-        UserInterface ui = new ConsoleInterface(new Scanner("a\na\na\na\nb"));
-
-        getGuess(ui);
-        char guess = getGuess(ui);
-
-        assertThat(guess).isEqualTo('b');
-    }
 }

@@ -14,4 +14,8 @@ public interface UserInterface {
     void unsuccessfulGuessMessage();
 
     void revealAnswer(String answer);
+
+    void alreadyGuessedMessage();
+
+    void alreadyFailedMessage();
 }
