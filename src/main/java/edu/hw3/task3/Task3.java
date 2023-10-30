@@ -13,7 +13,7 @@ public final class Task3 {
         Objects.requireNonNull(elements);
         Map<E, Integer> freqDict = new HashMap<>();
         for (E element : elements) {
-            freqDict.put(element, freqDict.getOrDefault(element, 0) + 1);
+            freqDict.merge(element, 1, Integer::sum);
         }
         return freqDict;
     }
