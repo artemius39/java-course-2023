@@ -13,10 +13,11 @@ public final class Task2 {
         StringBuilder currentCluster = new StringBuilder(parentheses.length());
 
         for (int i = 0; i < parentheses.length(); i++) {
-            currentCluster.append(parentheses.charAt(i));
-            if (parentheses.charAt(i) == '(') {
+            char currentCharacter = parentheses.charAt(i);
+            currentCluster.append(currentCharacter);
+            if (currentCharacter == '(') {
                 balance++;
-            } else if (parentheses.charAt(i) == ')') {
+            } else if (currentCharacter == ')') {
                 balance--;
             } else {
                 throw new IllegalArgumentException(
