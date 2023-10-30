@@ -18,7 +18,7 @@ class Task7Test {
 
         map.put(null, "test");
 
-        assertThat(map.containsKey(null)).isTrue();
+        assertThat(map).containsKey(null);
     }
 
     @Test
@@ -28,9 +28,10 @@ class Task7Test {
 
         map.put(null, "test1");
         map.put(null, "test2");
-        String get = map.get(null);
 
-        assertThat(get).isNotNull().isEqualTo("test2");
+        assertThat(map)
+                .doesNotContainEntry(null, "test1")
+                .containsEntry(null, "test2");
     }
 
     @Test
@@ -38,10 +39,10 @@ class Task7Test {
     void removeByNullKey() {
         Map<String, String> map = new TreeMap<>(nullFriendlyComparator());
 
-        map.put(null, "test1");
+        map.put(null, "test");
         map.remove(null);
 
-        assertThat(map.containsKey(null)).isFalse();
+        assertThat(map).doesNotContainEntry(null, "test");
     }
 
     @Test
@@ -51,10 +52,9 @@ class Task7Test {
 
         map.put(null, "null");
         map.put("key", "value");
-        String get1 = map.get(null);
-        String get2 = map.get("key");
 
-        assertThat(get1).isNotNull().isEqualTo("null");
-        assertThat(get2).isNotNull().isEqualTo("value");
+        assertThat(map)
+                .containsEntry(null, "null")
+                .containsEntry("key", "value");
     }
 }
