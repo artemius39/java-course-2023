@@ -10,7 +10,7 @@ public final class Task2 {
         Objects.requireNonNull(parentheses);
         int balance = 0;
         List<String> clusters = new ArrayList<>();
-        StringBuilder currentCluster = new StringBuilder();
+        StringBuilder currentCluster = new StringBuilder(parentheses.length());
 
         for (int i = 0; i < parentheses.length(); i++) {
             currentCluster.append(parentheses.charAt(i));
