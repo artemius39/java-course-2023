@@ -21,7 +21,7 @@ public final class Task2 {
                 balance--;
             } else {
                 throw new IllegalArgumentException(
-                        "Attempting to clusterize a string with a character with non-parenthesis character"
+                        "Attempting to clusterize a string with a non-parenthesis character"
                 );
             }
 
