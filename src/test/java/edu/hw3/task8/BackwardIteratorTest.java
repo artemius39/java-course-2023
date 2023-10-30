@@ -34,10 +34,9 @@ class BackwardIteratorTest {
     @Test
     @DisplayName("Empty collection")
     void emptyCollection() {
-        Iterator<String> iterator = new BackwardIterator<>(List.of());
+        Iterable<String> iterable = () -> new BackwardIterator<>(List.of());
 
-        assertThat(iterator.hasNext()).isFalse();
-        assertThrows(NoSuchElementException.class, iterator::next);
+        assertThat(iterable).isEmpty();
     }
 
     static Stream<Arguments> variousCollections() {
@@ -56,30 +55,16 @@ class BackwardIteratorTest {
         collection.add(1);
         collection.add(2);
         collection.add(3);
-        Iterator<Integer> iterator = new BackwardIterator<>(collection);
+        Iterable<Integer> iterable = () -> new BackwardIterator<>(collection);
 
-        assertThat(iterator.next()).isEqualTo(3);
-        assertThat(iterator.hasNext()).isTrue();
-        assertThat(iterator.next()).isEqualTo(2);
-        assertThat(iterator.hasNext()).isTrue();
-        assertThat(iterator.next()).isEqualTo(1);
-        assertThat(iterator.hasNext()).isFalse();
-        assertThrows(NoSuchElementException.class, iterator::next);
+        assertThat(iterable).containsExactly(3, 2, 1);
     }
 
     @Test
     @DisplayName("Unmodifiable collection")
     void unmodifiableCollection() {
-        List<String> list = List.of("one", "two", "three");
+        Iterable<String> iterable = () -> new BackwardIterator<>(List.of("one", "two", "three"));
 
-        Iterator<String> iterator = new BackwardIterator<>(list);
-
-        assertThat(iterator.next()).isEqualTo("three");
-        assertThat(iterator.hasNext()).isTrue();
-        assertThat(iterator.next()).isEqualTo("two");
-        assertThat(iterator.hasNext()).isTrue();
-        assertThat(iterator.next()).isEqualTo("one");
-        assertThat(iterator.hasNext()).isFalse();
-        assertThrows(NoSuchElementException.class, iterator::next);
+        assertThat(iterable).containsExactly("three", "two", "one");
     }
 }
