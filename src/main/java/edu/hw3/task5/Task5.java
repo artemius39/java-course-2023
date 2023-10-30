@@ -37,11 +37,12 @@ public final class Task5 {
             throw new IllegalArgumentException("Illegal name format: only 1-2 words allowed with "
                     + "exactly 1 space between them: '" + rawContact + "'");
         }
-        if (name[0].isEmpty()) {
+        String firstName = name[0];
+        if (firstName.isEmpty()) {
             throw new IllegalArgumentException("First name cannot be empty");
         }
 
-        return new Contact(name[0], name.length == 1 ? null : name[1]);
+        return new Contact(firstName, name.length == 1 ? null : name[1]);
     }
 
     private Task5() {
