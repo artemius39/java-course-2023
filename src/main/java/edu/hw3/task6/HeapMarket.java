@@ -5,7 +5,8 @@ import java.util.Objects;
 import java.util.PriorityQueue;
 
 public class HeapMarket implements StockMarket {
-    private static final Comparator<Stock> COMPARE_BY_VALUE_DESCENDING = Comparator.comparing(Stock::value).reversed();
+    private static final Comparator<Stock> COMPARE_BY_VALUE_DESCENDING =
+            Comparator.comparingInt(Stock::value).reversed();
 
     private final PriorityQueue<Stock> stocks;
 
