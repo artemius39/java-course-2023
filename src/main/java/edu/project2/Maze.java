@@ -1,7 +1,5 @@
 package edu.project2;
 
-import java.util.stream.Stream;
-
 public class Maze {
     private final int rows;
     private final int cols;
