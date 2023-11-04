@@ -32,6 +32,12 @@ public abstract class GraphTraversingSolver implements MazeSolver {
     public List<Coordinate> solve(Maze maze, Coordinate start, Coordinate end) {
         Objects.requireNonNull(start, "start cannot be null");
         Objects.requireNonNull(end, "end cannot be null");
+        if (maze.cellAt(start).type() != Cell.Type.PASSAGE) {
+            throw new IllegalArgumentException("start must be passage");
+        }
+        if (maze.cellAt(end).type() != Cell.Type.PASSAGE) {
+            throw new IllegalArgumentException("end must be passage");
+        }
 
         Cell startCell = maze.cellAt(start);
         Cell[][] parents = traverse(maze, startCell);

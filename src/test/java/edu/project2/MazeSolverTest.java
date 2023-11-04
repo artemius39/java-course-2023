@@ -8,6 +8,7 @@ import static edu.project2.TestUtils.findEnd;
 import static edu.project2.TestUtils.findStart;
 import static edu.project2.TestUtils.parseMaze;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 interface MazeSolverTest<T extends MazeSolver> {
     private void testMaze(String mazeString) {
@@ -226,5 +227,61 @@ interface MazeSolverTest<T extends MazeSolver> {
                 #           #
                 #############
                 """, solver);
+    }
+
+    @Test
+    @DisplayName("Null maze")
+    default void nullMaze() {
+        assertThrows(NullPointerException.class, () -> createMazeSolver().solve(null));
+    }
+
+    @Test
+    @DisplayName("Null start")
+    default void nullStart() {
+        Coordinate coordinate = new Coordinate(1, 1);
+        Maze maze = new Maze(
+                1, 1,
+                new Cell[][] {new Cell[] {new Cell(coordinate, Cell.Type.PASSAGE)}},
+                coordinate, coordinate
+        );
+        assertThrows(NullPointerException.class, () -> createMazeSolver().solve(maze, null, coordinate));
+    }
+
+    @Test
+    @DisplayName("Null end")
+    default void nullEnd() {
+        Coordinate coordinate = new Coordinate(0, 0);
+        Maze maze = new Maze(
+                1, 1,
+                new Cell[][] {new Cell[] {new Cell(coordinate, Cell.Type.PASSAGE)}},
+                coordinate, coordinate
+        );
+        assertThrows(NullPointerException.class, () -> createMazeSolver().solve(maze, coordinate, null));
+    }
+
+    @Test
+    @DisplayName("Wall start")
+    default void wallStart() {
+        Coordinate start = new Coordinate(0, 0);
+        Coordinate end = new Coordinate(0, 1);
+        Maze maze = new Maze(
+                1, 2,
+                new Cell[][] {new Cell[] {new Cell(start, Cell.Type.WALL), new Cell(end, Cell.Type.PASSAGE)}},
+                start, end
+        );
+        assertThrows(IllegalArgumentException.class, () -> createMazeSolver().solve(maze, start, end));
+    }
+
+    @Test
+    @DisplayName("Wall end")
+    default void wallEnd() {
+        Coordinate start = new Coordinate(0, 0);
+        Coordinate end = new Coordinate(0, 1);
+        Maze maze = new Maze(
+                1, 2,
+                new Cell[][] {new Cell[] {new Cell(start, Cell.Type.PASSAGE), new Cell(end, Cell.Type.WALL)}},
+                start, end
+        );
+        assertThrows(IllegalArgumentException.class, () -> createMazeSolver().solve(maze, start, end));
     }
 }
