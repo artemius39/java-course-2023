@@ -1,20 +1,21 @@
 package edu.project2;
 
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class SimpleRenderer implements MazeRenderer {
-    // one is for left wall, one is for right wall, and one is for line feed
-    private static final int ADDITIONAL_COLUMNS = 3;
-    private static final int ADDITIONAL_ROWS = 1; // top wall
+    private static final int UPPER_WALL = 1;
+    private static final int LOWER_WALL = 1;
+    private static final int ADDITIONAL_ROWS = UPPER_WALL + LOWER_WALL;
+    private static final int LEFT_WALL = 1;
+    private static final int RIGHT_WALL = 1;
+    private static final int ADDITIONAL_COLUMNS = LEFT_WALL + RIGHT_WALL;
     private final char wallChar;
     private final char passageChar;
     private final char pathChar;
     private final char startEndChar;
-
-    private void setCharAt(StringBuilder sb, Coordinate coordinate, int cols, char ch) {
-        int index = (coordinate.row() + ADDITIONAL_ROWS) * (cols + ADDITIONAL_COLUMNS) + coordinate.col() + 1;
-        sb.setCharAt(index, ch);
-    }
 
     public SimpleRenderer() {
         // with this wall character, maze looks best at line height of 0.9
@@ -28,44 +29,60 @@ public class SimpleRenderer implements MazeRenderer {
         this.startEndChar = startEndChar;
     }
 
+    private char[][] renderWalls(Maze maze) {
+        int renderRows = maze.getRows() + ADDITIONAL_ROWS;
+        int renderCols = maze.getCols() + ADDITIONAL_COLUMNS;
+        char[][] chars = new char[renderRows][renderCols];
+
+        Arrays.fill(chars[0], wallChar);
+        Arrays.fill(chars[renderRows - 1], wallChar);
+        for (int row = 0; row < maze.getRows(); row++) {
+            chars[row + UPPER_WALL][0] = wallChar;
+            for (int col = 0; col < maze.getCols(); col++) {
+                setCharAt(chars, row, col, maze.cellAt(row, col).type() == Cell.Type.WALL ? wallChar : passageChar);
+            }
+            chars[row + UPPER_WALL][renderCols - 1] = wallChar;
+        }
+
+        return chars;
+    }
+
+    private String flatten(char[][] chars) {
+        return Stream.of(chars)
+                .map(String::new)
+                .collect(Collectors.joining("\n"));
+    }
+
+    private void setCharAt(char[][] chars, Coordinate coordinate, char ch) {
+        setCharAt(chars, coordinate.row(), coordinate.col(), ch);
+    }
+
+    private void setCharAt(char[][] chars, int row, int col, char ch) {
+        chars[row + UPPER_WALL][col + LEFT_WALL] = ch;
+    }
+
+    private void renderStartOrEnd(Coordinate startOrEnd, char[][] chars) {
+        setCharAt(chars, startOrEnd, startEndChar);
+    }
+
     @Override
     public String render(Maze maze) {
-        StringBuilder sb = renderWalls(maze);
+        char[][] chars = renderWalls(maze);
 
-        Coordinate start = maze.getStart();
-        Coordinate end = maze.getEnd();
-        if (start != null /*&& end != null*/) {
-            setCharAt(sb, start, maze.getCols(), startEndChar);
-            setCharAt(sb, end, maze.getCols(), startEndChar);
-        }
-        return sb.toString();
+        renderStartOrEnd(maze.getStart(), chars);
+        renderStartOrEnd(maze.getEnd(), chars);
+
+        return flatten(chars);
     }
 
     @Override
     public String render(Maze maze, List<Coordinate> path) {
-        StringBuilder sb = renderWalls(maze);
-        if (path == null) {
-            return sb.toString();
-        }
-        for (Coordinate coordinate : path) {
-            setCharAt(sb, coordinate, maze.getCols(), pathChar);
-        }
-        return sb.toString();
-    }
-
-    private StringBuilder renderWalls(Maze maze) {
-        StringBuilder sb = new StringBuilder(maze.getRows() * (maze.getCols() + 1));
-
-        sb.append(String.valueOf(wallChar).repeat(maze.getCols() + 2)).append('\n');
-        for (int row = 0; row < maze.getRows(); row++) {
-            sb.append(wallChar);
-            for (int col = 0; col < maze.getCols(); col++) {
-                sb.append(maze.cellAt(row, col).type() == Cell.Type.WALL ? wallChar : passageChar);
+        char[][] chars = renderWalls(maze);
+        if (path != null) {
+            for (Coordinate coordinate : path) {
+                setCharAt(chars, coordinate, pathChar);
             }
-            sb.append(wallChar).append('\n');
         }
-        sb.append(String.valueOf(wallChar).repeat(maze.getCols() + 2));
-
-        return sb;
+        return flatten(chars);
     }
 }
