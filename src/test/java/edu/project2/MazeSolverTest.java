@@ -30,16 +30,12 @@ interface MazeSolverTest<T extends MazeSolver> {
                 .allMatch(coordinate -> 0 <= coordinate.row() && coordinate.row() < maze.getRows())
                 .allMatch(coordinate -> 0 <= coordinate.col() && coordinate.col() < maze.getCols())
                 .allMatch(coordinate -> maze.cellAt(coordinate).type() == Cell.Type.PASSAGE);
-        for (int i = 0; i < path.size() - 1; i++) {
-            Coordinate prev = path.get(i);
-            Coordinate next = path.get(i + 1);
 
-            assertThat(next).isIn(
-                    new Coordinate(prev.row() - 1, prev.col()),
-                    new Coordinate(prev.row(), prev.col() - 1),
-                    new Coordinate(prev.row() + 1, prev.col()),
-                    new Coordinate(prev.row(), prev.col() + 1)
-            );
+        Coordinate prev = path.getFirst();
+        for (Coordinate next : path.subList(1, path.size())) {
+            List<Coordinate> neighbors = prev.neighbors(maze.getRows(), maze.getCols()).toList();
+            assertThat(next).isIn(neighbors);
+            prev = next;
         }
     }
 
