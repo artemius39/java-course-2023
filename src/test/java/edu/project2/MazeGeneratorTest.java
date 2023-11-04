@@ -15,20 +15,29 @@ interface MazeGeneratorTest<T extends MazeGenerator> {
         assertThat(maze).isNotNull();
         assertThat(maze.getRows()).isEqualTo(rows);
         assertThat(maze.getCols()).isEqualTo(cols);
+        assertPassage(maze, maze.getStart());
+        assertPassage(maze, maze.getEnd());
 
         for (int row = 0; row < rows; row++) {
             for (int col = 0; col < cols; col++) {
-                Cell cell = maze.cellAt(row, col);
-
-                assertThat(cell).isNotNull();
-                assertThat(cell.row()).isEqualTo(row);
-                assertThat(cell.col()).isEqualTo(col);
-                assertThat(cell.type()).isNotNull();
-                assertThat(cell.coordinate()).isNotNull();
-                assertThat(cell.coordinate().row()).isEqualTo(row);
-                assertThat(cell.coordinate().col()).isEqualTo(col);
+                testCell(maze.cellAt(row, col), row, col);
             }
         }
+    }
+
+    private void assertPassage(Maze maze, Coordinate coordinate) {
+        assertThat(coordinate).isNotNull();
+        assertThat(maze.cellAt(coordinate).type()).isEqualTo(Cell.Type.PASSAGE);
+    }
+
+    private void testCell(Cell cell, int row, int col) {
+        assertThat(cell).isNotNull();
+        assertThat(cell.row()).isEqualTo(row);
+        assertThat(cell.col()).isEqualTo(col);
+        assertThat(cell.type()).isNotNull();
+        assertThat(cell.coordinate()).isNotNull();
+        assertThat(cell.coordinate().row()).isEqualTo(row);
+        assertThat(cell.coordinate().col()).isEqualTo(col);
     }
 
     private void assertError(int rows, int cols) {
