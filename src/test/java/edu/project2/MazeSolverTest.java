@@ -139,7 +139,6 @@ interface MazeSolverTest<T extends MazeSolver> {
                 startAndEnd, startAndEnd
         );
 
-        assert startAndEnd != null;
         assertThat(path).isEqualTo(List.of(startAndEnd));
     }
 

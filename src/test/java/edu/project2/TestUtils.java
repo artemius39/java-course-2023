@@ -42,6 +42,6 @@ public final class TestUtils {
                 }
             }
         }
-        return null;
+        return new Coordinate(-1, -1);
     }
 }

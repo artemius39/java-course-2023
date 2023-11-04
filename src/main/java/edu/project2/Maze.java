@@ -1,5 +1,7 @@
 package edu.project2;
 
+import java.util.Objects;
+
 public class Maze {
     private final int rows;
     private final int cols;
@@ -8,9 +10,8 @@ public class Maze {
     private final Coordinate end;
 
     public Maze(int rows, int cols, Cell[][] cells, Coordinate start, Coordinate end) {
-        if ((start == null) != (end == null)) {
-            throw new IllegalArgumentException("Maze must either have both start and end or not have either");
-        }
+        Objects.requireNonNull(start, "start cannot be null");
+        Objects.requireNonNull(end, "end cannot be null");
 
         this.rows = rows;
         this.cols = cols;
