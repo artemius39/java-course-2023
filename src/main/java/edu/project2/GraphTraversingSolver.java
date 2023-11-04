@@ -22,7 +22,7 @@ public abstract class GraphTraversingSolver implements MazeSolver {
     }
 
     protected Stream<Cell> neighbors(Cell cell, Maze maze, Cell[][] parents) {
-        return cell.coordinate().neighbors(maze.getRows(), maze.getCols(), 1)
+        return cell.coordinate().neighbors(maze.getRows(), maze.getCols())
                 .map(maze::cellAt)
                 .filter(neighbor -> neighbor.type() == Cell.Type.PASSAGE)
                 .filter(neighbor -> notVisited(parents, neighbor));
