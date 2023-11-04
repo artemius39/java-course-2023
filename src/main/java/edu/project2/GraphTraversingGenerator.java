@@ -29,8 +29,12 @@ public abstract class GraphTraversingGenerator implements MazeGenerator {
         return new Maze(
                 rows, cols, cells,
                 new Coordinate(0, randomEvenNumber(cols)),
-                new Coordinate(rows - 1, randomEvenNumber(cols))
+                new Coordinate(lastEvenRow(rows), randomEvenNumber(cols))
         );
+    }
+
+    private int lastEvenRow(int rows) {
+        return rows - (2 - rows % 2); // same as 'rows % 2 == 0 ? rows - 2 : rows - 1'
     }
 
     private int randomEvenNumber(int bound) {
