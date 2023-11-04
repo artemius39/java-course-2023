@@ -20,8 +20,7 @@ public abstract class GraphTraversingGenerator implements MazeGenerator {
 
         for (int row = 0; row < rows; row++) {
             for (int col = 0; col < cols; col++) {
-                Cell cell = cells[row][col];
-                if (cell == null) {
+                if (cells[row][col] == null) {
                     cells[row][col] = new Cell(new Coordinate(row, col), Cell.Type.WALL);
                 }
             }
