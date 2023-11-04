@@ -13,7 +13,7 @@ public abstract class GraphTraversingGenerator implements MazeGenerator {
             throw new IllegalArgumentException("row count must be positive: " + rows);
         }
         if (cols <= 0) {
-            throw new IllegalArgumentException("col count must be positive: " + cols);
+            throw new IllegalArgumentException("column count must be positive: " + cols);
         }
 
         Cell[][] cells = traverse(rows, cols);
