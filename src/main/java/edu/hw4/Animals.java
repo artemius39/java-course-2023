@@ -3,7 +3,6 @@ package edu.hw4;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.EnumMap;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -200,18 +199,25 @@ public final class Animals {
     }
 
     public static Map<String, Set<ValidationError>> validate(Collection<Animal> animals) {
-
-        Map<String, Set<ValidationError>> result = new HashMap<>();
-        for (Animal animal : animals) {
-            Set<ValidationError> errors = validateAnimal(animal);
-            if (!errors.isEmpty()) {
-                result.merge(animal.name(), errors, (oldSet, newSet) -> {
-                    oldSet.addAll(newSet);
-                    return oldSet;
-                });
-            }
-        }
-        return result;
+        return animals.stream()
+                .collect(Collectors.groupingBy(
+                        Animal::name,
+                        Collectors.mapping(
+                                Animals::validateAnimal,
+                                Collectors.reducing(
+                                        new HashSet<>(),
+                                        (Set<ValidationError> oldSet, Set<ValidationError> newSet) -> {
+                                            oldSet.addAll(newSet);
+                                            return oldSet;
+                                        }
+                                )
+                        )
+                )).entrySet().stream()
+                .filter(entry -> !entry.getValue().isEmpty())
+                .collect(Collectors.toMap(
+                        Map.Entry::getKey,
+                        Map.Entry::getValue
+                ));
     }
 
     private static Set<ValidationError> validateAnimal(Animal animal) {

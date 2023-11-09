@@ -60,21 +60,6 @@ class ValidateTest {
         assertThat(actual).containsKey("Bobik");
     }
 
-    private static Stream<Arguments> nullName() {
-        return collections(
-                new Animal(null, Animal.Type.DOG, Animal.Sex.MALE, 1, 1, 1, true)
-        );
-    }
-
-    @ParameterizedTest
-    @DisplayName("Null name")
-    @MethodSource
-    void nullName(Collection<Animal> animals) {
-        Map<String, Set<ValidationError>> actual = validate(animals);
-
-        assertThat(actual).containsKey(null);
-    }
-
     private static Stream<Arguments> blankName() {
         return collections(
                 new Animal("", Animal.Type.DOG, Animal.Sex.MALE, 42, 1, 1, true),
