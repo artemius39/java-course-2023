@@ -1,5 +1,6 @@
 package edu.hw4;
 
+import java.util.AbstractMap;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.EnumMap;
@@ -200,23 +201,18 @@ public final class Animals {
 
     public static Map<String, Set<ValidationError>> validate(Collection<Animal> animals) {
         return animals.stream()
-                .collect(Collectors.groupingBy(
-                        Animal::name,
-                        Collectors.mapping(
-                                Animals::validateAnimal,
-                                Collectors.reducing(
-                                        new HashSet<>(),
-                                        (Set<ValidationError> oldSet, Set<ValidationError> newSet) -> {
-                                            oldSet.addAll(newSet);
-                                            return oldSet;
-                                        }
-                                )
-                        )
-                )).entrySet().stream()
+                .map(animal -> new AbstractMap.SimpleEntry<>(animal.name(), Animals.validateAnimal(animal)))
                 .filter(entry -> !entry.getValue().isEmpty())
-                .collect(Collectors.toMap(
+                .collect(Collectors.groupingBy(
                         Map.Entry::getKey,
-                        Map.Entry::getValue
+                        Collectors.reducing(
+                                new HashSet<>(),
+                                Map.Entry::getValue,
+                                (set1, set2) -> {
+                                    set1.addAll(set2);
+                                    return set1;
+                                }
+                        )
                 ));
     }
 
