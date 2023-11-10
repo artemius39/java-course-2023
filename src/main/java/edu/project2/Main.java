@@ -6,9 +6,10 @@ public final class Main {
         // a little playground to see everything in action
         // before using it, it's best to change line height in terminal to 0.9 in IDE settings
         // (Editor -> Color Scheme -> Console Font -> Line height)
-        demo(new KruskalGenerator(), new BFSSolver(), new SimpleRenderer(), 15, 15);
+        demo(new KruskalGenerator(), new BFSSolver(), new SimpleRenderer(), 10, 10);
     }
 
+    @SuppressWarnings("SameParameterValue")
     private static void demo(MazeGenerator generator, MazeSolver solver, MazeRenderer renderer, int rows, int cols) {
         Maze maze = generator.generate(rows, cols);
 
