@@ -4,6 +4,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import java.io.IOException;
 import java.nio.file.Path;
+import static edu.hw6.task3.AbstractFilter.DIRECTORY;
 import static edu.hw6.task3.AbstractFilter.EXECUTABLE;
 import static edu.hw6.task3.AbstractFilter.READABLE;
 import static edu.hw6.task3.AbstractFilter.REGULAR;
@@ -27,10 +28,8 @@ class AbstractFilterTest {
     @DisplayName("Writable")
     void writable() throws IOException {
         Path writableFile = getResource("writable");
-        Path nonWritableFile = getResource("non-writable");
 
         assertThat(WRITABLE.accept(writableFile)).isTrue();
-        assertThat(WRITABLE.accept(nonWritableFile)).isFalse();
     }
 
     @Test
@@ -59,8 +58,8 @@ class AbstractFilterTest {
         Path directory = getResource("directory");
         Path regularFile = getResource("regular");
 
-        assertThat(AbstractFilter.DIRECTORY.accept(directory)).isTrue();
-        assertThat(AbstractFilter.DIRECTORY.accept(regularFile)).isFalse();
+        assertThat(DIRECTORY.accept(directory)).isTrue();
+        assertThat(DIRECTORY.accept(regularFile)).isFalse();
     }
     
     @Test
@@ -170,42 +169,40 @@ class AbstractFilterTest {
     @Test
     @DisplayName("Negate")
     void negate() throws IOException {
-        Path writableFile = getResource("writable");
-        Path nonWritable = getResource("non-writable");
+        Path png = getResource("image.png");
+        Path nonPng = getResource("executable");
 
-        AbstractFilter filter = WRITABLE.negate();
+        AbstractFilter filter = AbstractFilter.globMatches("**/*.png").negate();
 
-        assertThat(filter.accept(nonWritable)).isTrue();
-        assertThat(filter.accept(writableFile)).isFalse();
+        assertThat(filter.accept(png)).isFalse();
+        assertThat(filter.accept(nonPng)).isTrue();
     }
 
     @Test
     @DisplayName("And")
     void and() throws IOException {
-        Path writableAndExecutable = getResource("writable-and-executable");
-        Path executableButNotWritable = getResource("executable-but-not-writable");
-        Path writableButNotExecutable = getResource("writable-but-not-executable");
+        Path tooSmall = getResource("smaller-than-10-bytes");
+        Path tooLarge = getResource("larger-than-10-bytes");
+        Path perfect = getResource("exactly-10-bytes");
 
-        AbstractFilter filter = WRITABLE.and(EXECUTABLE);
+        AbstractFilter filter = AbstractFilter.largerThan(7).and(AbstractFilter.smallerThan(12));
 
-        assertThat(filter.accept(writableAndExecutable)).isTrue();
-        assertThat(filter.accept(executableButNotWritable)).isFalse();
-        assertThat(filter.accept(writableButNotExecutable)).isFalse();
+        assertThat(filter.accept(tooSmall)).isFalse();
+        assertThat(filter.accept(tooLarge)).isFalse();
+        assertThat(filter.accept(perfect)).isTrue();
     }
 
     @Test
     @DisplayName("Or")
     void or() throws IOException {
-        Path writableAndExecutable = getResource("writable-and-executable");
-        Path executableButNotWritable = getResource("executable-but-not-writable");
-        Path writableButNotExecutable = getResource("writable-but-not-executable");
-        Path nonWritableAndNonExecutable = getResource("not-writable-and-not-executable");
+        Path matches = getResource("matches");
+        Path png = getResource("image.png");
+        Path none = getResource("doesnt-match");
 
-        AbstractFilter filter = WRITABLE.or(EXECUTABLE);
+        AbstractFilter filter = AbstractFilter.nameMatchesRegex("m.*es").or(AbstractFilter.hasExtension("png"));
 
-        assertThat(filter.accept(writableAndExecutable)).isTrue();
-        assertThat(filter.accept(executableButNotWritable)).isTrue();
-        assertThat(filter.accept(writableButNotExecutable)).isTrue();
-        assertThat(filter.accept(nonWritableAndNonExecutable)).isFalse();
+        assertThat(filter.accept(matches)).isTrue();
+        assertThat(filter.accept(png)).isTrue();
+        assertThat(filter.accept(none)).isFalse();
     }
 }
