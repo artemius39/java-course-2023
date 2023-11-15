@@ -20,7 +20,7 @@ public final class ScanPorts {
             3306, "MySQL Database",
             5432, "PostgreSQL Database",
             3389, "Remote Desktop Protocol (RDP)",
-            27017, "MongoDB Database"
+            8080, "HTTP Proxy"
     );
 
     private static final Map<Integer, String> POSSIBLE_UDP_USERS = Map.of(

@@ -11,9 +11,9 @@ class ScanPortsTest {
     @Test
     @DisplayName("Used port")
     void usedPortIsDisplayed() throws IOException {
-        ServerSocket socket = new ServerSocket(80);
+        ServerSocket socket = new ServerSocket(8080);
 
-        assertThat(scanPorts(100).lines()).anyMatch(line -> line.matches("TCP\\s+80\\s+HTTP"));
+        assertThat(scanPorts(10000).lines()).anyMatch(line -> line.matches("TCP\\s+8080\\s+HTTP Proxy"));
         
         socket.close();
     }
