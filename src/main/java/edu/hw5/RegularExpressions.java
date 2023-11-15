@@ -20,7 +20,7 @@ public final class RegularExpressions {
     }
 
     public static final String NUMBER_OF_ZEROS_IS_A_MULTIPLE_OF_3 = "1*(1*01*01*01*)*";
-    public static final String ANYTHING_BUT_11_OR_111 = "(?!^11$|^111$)[01]*";
+    public static final String ANYTHING_BUT_11_OR_111 = "|1|(0|10|110)[01]*|111[01]+";
     public static final String EVERY_ODD_CHARACTER_IS_1 = "(1[01])*1?";
     public static final String AT_LEAST_TWO_ZEROS_AND_NO_MORE_THAN_ONE_ONE = "1?0{2,}|01?0+|0{2,}1?";
     public static final String NO_CONSECUTIVE_ONES = "0*(10+)*1?";
