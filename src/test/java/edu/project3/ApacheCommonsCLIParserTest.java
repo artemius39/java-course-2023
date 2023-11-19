@@ -177,4 +177,20 @@ class ApacheCommonsCLIParserTest {
 
         assertThrows(IllegalCLIArgumentException.class, () -> parser.parse(args));
     }
+
+    @Test
+    @DisplayName("Extra parameters")
+    void extraParameters() {
+        CLIParser parser = new ApacheCommonsCLIParser();
+        String[] args = {
+                "--path", "nginx_logs",
+                "--from", "2015-01-23",
+                "--to", "2023-11-19",
+                "--format", "markdown",
+                "--output-file", "report.md",
+                "--unsupported", "this argument is not supported"
+        };
+
+        assertThrows(IllegalCLIArgumentException.class, () -> parser.parse(args));
+    }
 }
