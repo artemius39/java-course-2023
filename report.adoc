@@ -1,0 +1,34 @@
+== General Info
+
+[cols="^,^", options="header"]
+|===
+|Metric|Value
+|Sources|`nginx_logs`
+|From Date|19.10.2012
+|To Date|18.10.2022
+|Total requests|51462
+|Average Response Size|659509 bytes
+|===
+
+== Resources Requested
+
+[cols="^,^", options="header"]
+|===
+|Resource|Times Requested
+|`/downloads/product_1`|30285
+|`/downloads/product_2`|21104
+|`/downloads/product_3`|73
+|===
+
+== Status Codes
+
+[cols="^,^,^", options="header"]
+|===
+|Status Code|Name|Times Returned
+|404|Not Found|33876
+|304|-|13330
+|200|OK|4028
+|206|-|186
+|403|Forbidden|38
+|416|-|4
+|===
