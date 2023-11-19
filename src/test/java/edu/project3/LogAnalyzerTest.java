@@ -51,6 +51,20 @@ class LogAnalyzerTest {
                         |:-:|:-:|:-:|
                         |304|-|3|
                         |200|OK|2|
+                        
+                        #### Method Stats
+                        
+                        |Method|Times Requested|
+                        |:-:|:-:|
+                        |GET|3|
+                        |HEAD|2|
+                        
+                        #### User Zone Offset Stats
+                        
+                        |Offset|No. of Requests From That Offset|
+                        |:-:|:-:|
+                        |Z|3|
+                        |+08:00|2|
                         """.formatted(source));
         Files.delete(output);
     }

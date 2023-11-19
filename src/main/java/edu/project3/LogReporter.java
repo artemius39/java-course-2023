@@ -2,8 +2,10 @@ package edu.project3;
 
 import edu.project3.metrics.AverageResponseSize;
 import edu.project3.metrics.Counter;
+import edu.project3.metrics.MethodCounter;
 import edu.project3.metrics.ResourcesCounter;
 import edu.project3.metrics.StatusCodeCounter;
+import edu.project3.metrics.TimeOffsetCounter;
 import java.time.OffsetDateTime;
 import java.util.Iterator;
 import java.util.stream.Stream;
@@ -22,6 +24,8 @@ public class LogReporter {
         AverageResponseSize averageResponseSize = new AverageResponseSize();
         ResourcesCounter resourcesCounter = new ResourcesCounter();
         StatusCodeCounter statusCodeCounter = new StatusCodeCounter();
+        MethodCounter methodCounter = new MethodCounter();
+        TimeOffsetCounter timeOffsetCounter = new TimeOffsetCounter();
 
         Iterator<LogRecord> iterator = logsFilteredByDate.iterator();
         while (iterator.hasNext()) {
@@ -31,6 +35,8 @@ public class LogReporter {
             averageResponseSize.count(log);
             resourcesCounter.count(log);
             statusCodeCounter.count(log);
+            methodCounter.count(log);
+            timeOffsetCounter.count(log);
         }
 
         return new LogReport(
@@ -38,7 +44,9 @@ public class LogReporter {
                 counter.get(),
                 averageResponseSize.get(),
                 resourcesCounter.get(),
-                statusCodeCounter.get()
+                statusCodeCounter.get(),
+                methodCounter.get(),
+                timeOffsetCounter.get()
         );
     }
 

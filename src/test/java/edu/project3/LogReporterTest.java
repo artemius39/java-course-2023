@@ -3,6 +3,7 @@ package edu.project3;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.util.Map;
 import java.util.stream.Stream;
@@ -49,6 +50,16 @@ class LogReporterTest {
                         304, 1,
                         200, 1,
                         404, 1
+                ),
+                Map.of(
+                        LogRecord.Method.GET, 1,
+                        LogRecord.Method.HEAD, 1,
+                        LogRecord.Method.POST, 1
+                ),
+                Map.of(
+                        ZoneOffset.of("+0000"), 1,
+                        ZoneOffset.of("+0300"), 1,
+                        ZoneOffset.of("-1000"), 1
                 )
         ));
     }
@@ -90,6 +101,14 @@ class LogReporterTest {
                 Map.of(
                         200, 1,
                         404, 1
+                ),
+                Map.of(
+                        LogRecord.Method.HEAD, 1,
+                        LogRecord.Method.POST, 1
+                ),
+                Map.of(
+                        ZoneOffset.of("+0000"), 1,
+                        ZoneOffset.of("-1000"), 1
                 )
         ));
     }
@@ -131,6 +150,14 @@ class LogReporterTest {
                 Map.of(
                         304, 1,
                         200, 1
+                ),
+                Map.of(
+                        LogRecord.Method.GET, 1,
+                        LogRecord.Method.HEAD, 1
+                ),
+                Map.of(
+                        ZoneOffset.of("+0300"), 1,
+                        ZoneOffset.of("-1000"), 1
                 )
         ));
     }
@@ -171,6 +198,12 @@ class LogReporterTest {
                 ),
                 Map.of(
                         200, 1
+                ),
+                Map.of(
+                        LogRecord.Method.HEAD, 1
+                ),
+                Map.of(
+                        ZoneOffset.of("-1000"), 1
                 )
         ));
     }
@@ -206,6 +239,8 @@ class LogReporterTest {
 
         assertThat(report).isEqualTo(new LogReport(
                 from, to, "nginx_logs", 0, 0,
+                Map.of(),
+                Map.of(),
                 Map.of(),
                 Map.of()
         ));

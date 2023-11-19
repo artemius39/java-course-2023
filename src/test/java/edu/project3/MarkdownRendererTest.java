@@ -3,6 +3,7 @@ package edu.project3;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.util.Map;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -26,6 +27,15 @@ class MarkdownRendererTest {
                         300, 12,
                         200, 120,
                         500, 3
+                ),
+                Map.of(
+                        LogRecord.Method.GET, 10,
+                        LogRecord.Method.POST, 20,
+                        LogRecord.Method.HEAD, 100
+                ),
+                Map.of(
+                        ZoneOffset.of("Z"), 100,
+                        ZoneOffset.of("+0300"), 3
                 )
         );
         LogReportRenderer renderer = new MarkdownRenderer();
@@ -58,6 +68,21 @@ class MarkdownRendererTest {
                 |200|OK|120|
                 |300|-|12|
                 |500|Internal Server Error|3|
+                
+                #### Method Stats
+                
+                |Method|Times Requested|
+                |:-:|:-:|
+                |HEAD|100|
+                |POST|20|
+                |GET|10|
+                
+                #### User Zone Offset Stats
+                
+                |Offset|No. of Requests From That Offset|
+                |:-:|:-:|
+                |Z|100|
+                |+03:00|3|
                 """);
     }
 
@@ -75,6 +100,15 @@ class MarkdownRendererTest {
                         300, 12,
                         200, 120,
                         500, 3
+                ),
+                Map.of(
+                        LogRecord.Method.GET, 10,
+                        LogRecord.Method.POST, 20,
+                        LogRecord.Method.HEAD, 100
+                ),
+                Map.of(
+                        ZoneOffset.of("Z"), 100,
+                        ZoneOffset.of("+0300"), 3
                 )
         );
         LogReportRenderer renderer = new MarkdownRenderer();
@@ -107,6 +141,21 @@ class MarkdownRendererTest {
                 |200|OK|120|
                 |300|-|12|
                 |500|Internal Server Error|3|
+                
+                #### Method Stats
+                
+                |Method|Times Requested|
+                |:-:|:-:|
+                |HEAD|100|
+                |POST|20|
+                |GET|10|
+                
+                #### User Zone Offset Stats
+                
+                |Offset|No. of Requests From That Offset|
+                |:-:|:-:|
+                |Z|100|
+                |+03:00|3|
                 """);
     }
 }

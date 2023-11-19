@@ -1,6 +1,7 @@
 package edu.project3;
 
 import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.util.Map;
 
@@ -19,6 +20,7 @@ public abstract class BaseRenderer implements LogReportRenderer {
     );
     private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("dd.MM.yyyy");
     private static final int COLUMNS_IN_STATUS_CODES = 3;
+    private static final String TIMES_REQUESTED = "Times Requested";
 
     @Override
     public String render(LogReport report) {
@@ -29,8 +31,36 @@ public abstract class BaseRenderer implements LogReportRenderer {
         renderResourceStats(report, renderResult);
         renderResult.append('\n');
         renderStatusCodeStats(report, renderResult);
+        renderResult.append('\n');
+        renderMethodStats(report, renderResult);
+        renderResult.append('\n');
+        renderZoneOffsetStats(report, renderResult);
 
         return renderResult.toString();
+    }
+
+    private void renderZoneOffsetStats(LogReport report, StringBuilder renderResult) {
+        TableBuilder builder = tableBuilder(renderResult, 2,
+                "User Zone Offset Stats",
+                "Offset", "No. of Requests From That Offset");
+        report.zoneOffsetFrequencies()
+                .entrySet()
+                .stream()
+                .sorted(Map.Entry.<ZoneOffset, Integer>comparingByValue().reversed())
+                .forEach(entry -> builder.addRow(entry.getKey(), entry.getValue()));
+        builder.build();
+    }
+
+    private void renderMethodStats(LogReport report, StringBuilder renderResult) {
+        TableBuilder builder = tableBuilder(renderResult, 2,
+                "Method Stats",
+                "Method", TIMES_REQUESTED);
+        report.methodFrequencies()
+                .entrySet()
+                .stream()
+                .sorted(Map.Entry.<LogRecord.Method, Integer>comparingByValue().reversed())
+                .forEach(entry -> builder.addRow(entry.getKey(), entry.getValue()));
+        builder.build();
     }
 
     private void renderGeneralInfo(LogReport report, StringBuilder renderResult) {
@@ -53,7 +83,7 @@ public abstract class BaseRenderer implements LogReportRenderer {
         TableBuilder resourcesRequested = tableBuilder(
                 renderResult, 2,
                 "Resources Requested",
-                "Resource", "Times Requested"
+                "Resource", TIMES_REQUESTED
         );
         report.requestedResources()
                 .entrySet()
