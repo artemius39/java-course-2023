@@ -4,6 +4,9 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
@@ -25,13 +28,24 @@ class DiskMapTest {
 
     @Test
     @DisplayName("Put")
-    void put() {
-        Map<String, String> map = new DiskMap();
+    void put() throws IOException {
+        Map<String, String> map = new DiskMap("tmp");
+        Path tmp = Path.of("tmp");
+        Path entry = tmp.resolve("entry-key");
 
         String previousValue = map.put("key", "value");
 
         assertThat(map).containsEntry("key", "value");
         assertThat(previousValue).isNull();
+        assertThat(tmp)
+                .exists()
+                .isDirectory();
+        assertThat(entry)
+                .exists()
+                .hasContent("value");
+
+        Files.delete(entry);
+        Files.delete(tmp);
     }
 
     @Test
@@ -85,8 +99,11 @@ class DiskMapTest {
 
     @Test
     @DisplayName("Remove")
-    void remove() {
-        Map<String, String> map = new DiskMap();
+    void remove() throws IOException {
+        Map<String, String> map = new DiskMap("tmp");
+        Path tmp = Path.of("tmp");
+        Path entry1 = tmp.resolve("entry-key1");
+        Path entry2 = tmp.resolve("entry-key2");
 
         map.put("key1", "value1");
         map.put("key2", "value2");
@@ -95,6 +112,11 @@ class DiskMapTest {
         assertThat(map)
                 .containsEntry("key2", "value2")
                 .doesNotContainEntry("key1", "value1");
+        assertThat(tmp).exists();
+        assertThat(entry1).doesNotExist();
+
+        Files.delete(entry2);
+        Files.delete(tmp);
     }
 
     @Test
