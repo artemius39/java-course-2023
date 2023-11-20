@@ -191,7 +191,7 @@ public class DiskMap implements Map<String, String> {
     @NotNull
     private Stream<Path> getEntryStream() {
         try {
-            // TODO
+            //noinspection resource
             return Files.walk(entriesDirectory).skip(1);
         } catch (IOException e) {
             throw new RuntimeException(e);
