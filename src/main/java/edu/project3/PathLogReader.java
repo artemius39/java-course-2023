@@ -37,6 +37,10 @@ public class PathLogReader implements LogReader {
                 .reduce(Stream::concat);
     }
 
+    @Override
+    public void close() {
+    }
+
     private static class PathMatchingVisitor extends SimpleFileVisitor<Path> {
         private final List<Path> paths;
         private final PathMatcher matcher;

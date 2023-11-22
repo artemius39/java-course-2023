@@ -30,4 +30,9 @@ public class URLLogReader implements LogReader {
             throw new RuntimeException(e);
         }
     }
+
+    @Override
+    public void close() {
+        client.close();
+    }
 }

@@ -12,6 +12,7 @@ import java.time.format.DateTimeParseException;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 public class LogAnalyzer {
@@ -21,9 +22,9 @@ public class LogAnalyzer {
             "adoc", new AdocRenderer()
     );
 
-    private static final List<LogReader> SOURCE_PARSERS = List.of(
-            new URLLogReader(),
-            new PathLogReader()
+    private static final List<Supplier<LogReader>> SOURCE_PARSERS = List.of(
+            URLLogReader::new,
+            PathLogReader::new
     );
 
     private final CLIParser cliParser;
@@ -51,10 +52,12 @@ public class LogAnalyzer {
     }
 
     private Stream<String> readLogs(String path) {
-        for (LogReader logReader : SOURCE_PARSERS) {
-            Optional<Stream<String>> logs = logReader.readLogs(path);
-            if (logs.isPresent()) {
-                return logs.get();
+        for (Supplier<LogReader> logReaderFactory : SOURCE_PARSERS) {
+            try (LogReader logReader = logReaderFactory.get()) {
+                Optional<Stream<String>> logs = logReader.readLogs(path);
+                if (logs.isPresent()) {
+                    return logs.get();
+                }
             }
         }
         throw new IllegalCLIArgumentException("Could not find logs at " + path);
