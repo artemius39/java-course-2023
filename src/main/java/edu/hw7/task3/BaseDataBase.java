@@ -41,16 +41,16 @@ public class BaseDataBase implements PersonDataBase {
 
     @Override
     public List<Person> findByName(String name) {
-        return nameMap.get(name);
+        return List.copyOf(nameMap.get(name));
     }
 
     @Override
     public List<Person> findByPhone(String phoneNumber) {
-        return phoneNumberMap.get(phoneNumber);
+        return List.copyOf(phoneNumberMap.get(phoneNumber));
     }
 
     @Override
     public List<Person> findByAddress(String address) {
-        return addressMap.get(address);
+        return List.copyOf(addressMap.get(address));
     }
 }
