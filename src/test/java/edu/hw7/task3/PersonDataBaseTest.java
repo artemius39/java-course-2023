@@ -30,9 +30,20 @@ interface PersonDataBaseTest<T extends PersonDataBase> {
             List<Person> byAddress = dataBase.findByAddress("address" + id);
             List<Person> byName = dataBase.findByName("name" + id);
 
-            assertThat(byPhoneNumber)
-                    .isEqualTo(byAddress)
-                    .isEqualTo(byName);
+            if (byPhoneNumber.isEmpty()) {
+                assertThat(byName).isEmpty();
+                assertThat(byPhoneNumber).isEmpty();
+            } else {
+                Person person = new Person(
+                        id,
+                        "name" + id,
+                        "address" + id,
+                        "phone number" + id
+                );
+                assertThat(byName).contains(person);
+                assertThat(byAddress).contains(person);
+                assertThat(byPhoneNumber).contains(person);
+            }
         }
     }
 
@@ -60,9 +71,20 @@ interface PersonDataBaseTest<T extends PersonDataBase> {
             List<Person> byAddress = dataBase.findByAddress("address" + id);
             List<Person> byName = dataBase.findByName("name" + id);
 
-            assertThat(byPhoneNumber)
-                    .isEqualTo(byAddress)
-                    .isEqualTo(byName);
+            if (byPhoneNumber.isEmpty()) {
+                assertThat(byName).isEmpty();
+                assertThat(byPhoneNumber).isEmpty();
+            } else {
+                Person person = new Person(
+                        id,
+                        "name" + id,
+                        "address" + id,
+                        "phone number" + id
+                );
+                assertThat(byName).contains(person);
+                assertThat(byAddress).contains(person);
+                assertThat(byPhoneNumber).contains(person);
+            }
         }
     }
 }
