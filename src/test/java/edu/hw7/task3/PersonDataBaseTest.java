@@ -8,10 +8,13 @@ import static org.assertj.core.api.Assertions.assertThat;
 interface PersonDataBaseTest<T extends PersonDataBase> {
     T getDataBase();
 
-    private void assertConsistentSearch(int id, PersonDataBase dataBase) {
+    private void assertConsistentSearch(int id, PersonDataBase dataBase, Thread modifyingThread)
+            throws InterruptedException {
+        modifyingThread.wait();
         List<Person> byPhoneNumber = List.copyOf(dataBase.findByPhone("phone number" + id));
         List<Person> byAddress = List.copyOf(dataBase.findByAddress("address" + id));
         List<Person> byName = List.copyOf(dataBase.findByName("name" + id));
+        modifyingThread.notify();
 
         if (byPhoneNumber.isEmpty()) {
             assertThat(byName).isEmpty();
@@ -31,7 +34,7 @@ interface PersonDataBaseTest<T extends PersonDataBase> {
 
     @Test
     @DisplayName("Search mid addition")
-    default void searchMidAddition() {
+    default void searchMidAddition() throws InterruptedException {
         PersonDataBase dataBase = getDataBase();
         int iterationCount = 1_000_000;
         Thread thread = new Thread(() -> {
@@ -47,13 +50,13 @@ interface PersonDataBaseTest<T extends PersonDataBase> {
         thread.start();
 
         for (int id = 0; id < iterationCount; id++) {
-            assertConsistentSearch(id, dataBase);
+            assertConsistentSearch(id, dataBase, thread);
         }
     }
 
     @Test
     @DisplayName("Search mid removal")
-    default void searchMidRemoval() {
+    default void searchMidRemoval() throws InterruptedException {
         PersonDataBase dataBase = getDataBase();
         int iterationCount = 1_000_000;
         for (int id = 0; id < iterationCount; id++) {
@@ -64,14 +67,15 @@ interface PersonDataBaseTest<T extends PersonDataBase> {
                     "phone number" + id
             ));
         }
-        new Thread(() -> {
+        Thread thread = new Thread(() -> {
             for (int id = 0; id < iterationCount; id++) {
                 dataBase.delete(id);
             }
-        }).start();
+        });
+        thread.start();
 
         for (int id = 0; id < iterationCount; id++) {
-            assertConsistentSearch(id, dataBase);
+            assertConsistentSearch(id, dataBase, thread);
         }
     }
 }
