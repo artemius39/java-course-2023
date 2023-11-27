@@ -21,7 +21,11 @@ public class BaseDataBase implements PersonDataBase {
 
     @Override
     public void add(Person person) {
-        idMap.put(person.id(), person);
+        Person previous = idMap.putIfAbsent(person.id(), person);
+        if (previous != null) {
+            throw new IllegalArgumentException("Person with id "  + person.id() + " is already saved");
+        }
+
         nameMap.put(person.name(), person);
         addressMap.put(person.address(), person);
         phoneNumberMap.put(person.phoneNumber(), person);
