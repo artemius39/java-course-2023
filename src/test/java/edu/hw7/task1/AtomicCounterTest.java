@@ -2,6 +2,8 @@ package edu.hw7.task1;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class AtomicCounterTest {
@@ -30,22 +32,17 @@ class AtomicCounterTest {
 
     @Test
     @DisplayName("Multi-threaded increment")
-    void noRaceConditionInMultiThreadedMode() throws InterruptedException {
+    void noRaceConditionInMultiThreadedMode() {
         AtomicCounter counter = new AtomicCounter();
 
-        Thread[] threads = new Thread[10];
-        for (int threadNo = 0; threadNo < 10; threadNo++) {
-            Thread thread = new Thread(() -> {
-                for (int iteration = 0; iteration < 10_000; iteration++) {
-                    counter.increment();
-                }
-            });
-            thread.start();
-
-            threads[threadNo] = thread;
-        }
-        for (Thread thread : threads) {
-            thread.join();
+        try (ExecutorService executorService = Executors.newFixedThreadPool(10)) {
+            for (int thread = 0; thread < 10; thread++) {
+                executorService.submit(() -> {
+                    for (int iteration = 0; iteration < 10_000; iteration++) {
+                        counter.increment();
+                    }
+                });
+            }
         }
         int value = counter.get();
 
