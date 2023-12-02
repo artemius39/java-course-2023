@@ -2,6 +2,7 @@ package edu.hw8.task1;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Timeout;
 import java.io.IOException;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
@@ -13,6 +14,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 class QuoteServiceTest {
     @Test
+    @Timeout(30)
     @DisplayName("Single client")
     void singleClient() throws InterruptedException {
         Server server = new QuoteServer();
@@ -33,6 +35,7 @@ class QuoteServiceTest {
     }
 
     @Test
+    @Timeout(30)
     @DisplayName("Multiple clients")
     void multipleClients() throws InterruptedException, ExecutionException {
         Server server = new QuoteServer();
@@ -62,6 +65,7 @@ class QuoteServiceTest {
     }
 
     @Test
+    @Timeout(30)
     @DisplayName("More clients than threads")
     void moreClientsThanThreads() throws InterruptedException {
         Server server = new QuoteServer();
@@ -94,6 +98,7 @@ class QuoteServiceTest {
     }
 
     @Test
+    @Timeout(30)
     @DisplayName("No quotes found")
     void noQuotesFound() throws InterruptedException {
         Server server = new QuoteServer();
