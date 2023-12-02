@@ -1,5 +1,7 @@
 package edu.hw8.task1;
 
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
@@ -14,13 +16,26 @@ import java.util.concurrent.Future;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class QuoteServiceTest {
+    private Server server;
+    private Thread serverThread;
+
+    @BeforeEach
+    void startServer() {
+        server = new QuoteServer();
+        serverThread = new Thread(server::start);
+        serverThread.start();
+    }
+
+    @AfterEach
+    void stopServer() throws InterruptedException {
+        server.shutdown();
+        serverThread.join();
+    }
+
     @Test
     @Timeout(30)
     @DisplayName("Single client")
-    void singleClient() throws InterruptedException {
-        Server server = new QuoteServer();
-        Thread thread = new Thread(server::start);
-        thread.start();
+    void singleClient() {
         try (Client client = new QuoteClient()) {
             String keyword = "интеллект";
 
@@ -30,17 +45,12 @@ class QuoteServiceTest {
             assertThat(response).isIn("Чем ниже интеллект, тем громче оскорбления", "No response");
         } catch (IOException ignored) {
         }
-        server.shutdown();
-        thread.join();
     }
 
     @Test
     @Timeout(30)
     @DisplayName("Multiple clients")
     void multipleClients() throws InterruptedException {
-        Server server = new QuoteServer();
-        Thread thread = new Thread(server::start);
-        thread.start();
         try (ExecutorService executorService = Executors.newFixedThreadPool(2)) {
             String keyword = "интеллект";
 
@@ -66,18 +76,12 @@ class QuoteServiceTest {
             } catch (ExecutionException ignored) {
             }
         }
-        server.shutdown();
-        thread.join();
     }
 
     @Test
-    @Timeout(120)
+    @Timeout(30)
     @DisplayName("More clients than threads")
     void moreClientsThanThreads() throws InterruptedException {
-        Server server = new QuoteServer();
-        Thread thread = new Thread(server::start);
-        thread.start();
-
         List<Future<String>> tasks = new ArrayList<>();
         try (ExecutorService executorService = Executors.newFixedThreadPool(10)) {
             for (int i = 0; i < 10; i++) {
@@ -98,18 +102,12 @@ class QuoteServiceTest {
             } catch (ExecutionException ignored) {
             }
         }
-
-        server.shutdown();
-        thread.join();
     }
 
     @Test
     @Timeout(30)
     @DisplayName("No quotes found")
-    void noQuotesFound() throws InterruptedException {
-        Server server = new QuoteServer();
-        Thread thread = new Thread(server::start);
-        thread.start();
+    void noQuotesFound() {
         try (Client client = new QuoteClient()) {
             String keyword = "no quotes for this keyword";
 
@@ -119,7 +117,5 @@ class QuoteServiceTest {
             assertThat(response).isIn("No quotes found for this keyword", "No response");
         } catch (IOException ignored) {
         }
-        server.shutdown();
-        thread.join();
     }
 }
