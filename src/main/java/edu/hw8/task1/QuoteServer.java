@@ -16,11 +16,8 @@ import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 public class QuoteServer implements Server {
-    private static final Logger LOGGER = LogManager.getLogger();
     private static final String DEFAULT_HOST = "localhost";
     private static final int DEFAULT_PORT = 8080;
     private static final int BUFFER_CAPACITY = 1024;
@@ -80,7 +77,6 @@ public class QuoteServer implements Server {
     }
 
     private void read(SelectionKey key) throws IOException {
-        LOGGER.info("Handling request");
         SocketChannel client = (SocketChannel) key.channel();
         String keyword;
         try {

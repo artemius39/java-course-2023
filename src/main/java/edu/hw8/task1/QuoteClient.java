@@ -9,11 +9,8 @@ import java.nio.channels.SelectionKey;
 import java.nio.channels.Selector;
 import java.nio.channels.SocketChannel;
 import java.nio.charset.StandardCharsets;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 public class QuoteClient implements Client {
-    private static final Logger LOGGER = LogManager.getLogger();
     private static final String DEFAULT_HOST = "localhost";
     private static final int DEFAULT_PORT = 8080;
     private static final int BUFFER_CAPACITY = 256;
@@ -45,9 +42,7 @@ public class QuoteClient implements Client {
 
     @Override
     public String waitResponse() throws IOException {
-        LOGGER.info("Client {} is waiting for response", this);
         selector.select();
-        LOGGER.info("Client {} got response", this);
         buffer.clear();
         return Util.readString(channel, buffer);
     }
@@ -58,12 +53,10 @@ public class QuoteClient implements Client {
                 .put(keyword.getBytes(StandardCharsets.UTF_16))
                 .flip();
         channel.write(buffer);
-        LOGGER.info("Client {} sent request {}", this, keyword);
     }
 
     @Override
     public void close() throws IOException {
-        LOGGER.info("Closed {}", this);
         selector.close();
         channel.close();
     }

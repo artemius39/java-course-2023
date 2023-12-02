@@ -5,12 +5,8 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.channels.SocketChannel;
 import java.nio.charset.StandardCharsets;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 final class Util {
-    private static final Logger LOGGER = LogManager.getLogger();
-
     public static String readString(SocketChannel channel, ByteBuffer buffer) throws IOException {
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
         int bytesRead;
@@ -22,9 +18,7 @@ final class Util {
             buffer.clear();
         }
 
-        String string = stream.toString(StandardCharsets.UTF_16);
-        LOGGER.info("Read '{}'", string);
-        return string;
+        return stream.toString(StandardCharsets.UTF_16);
     }
 
     private Util() {
