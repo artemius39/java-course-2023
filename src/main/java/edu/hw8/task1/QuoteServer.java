@@ -21,6 +21,7 @@ public class QuoteServer implements Server {
     private static final int DEFAULT_PORT = 8080;
     private static final int BUFFER_CAPACITY = 1024;
     private static final CompletableFuture<?>[] FUTURES = new CompletableFuture[0];
+    private static final int TIMEOUT = 1000;
 
     private final ExecutorService executorService;
     private final InetSocketAddress address;
@@ -41,7 +42,7 @@ public class QuoteServer implements Server {
         try (Selector selector = Selector.open();
              ServerSocketChannel acceptor = acceptor(selector)) {
             while (running) {
-                selector.select();
+                selector.select(TIMEOUT);
                 Set<SelectionKey> keys = selector.selectedKeys();
 
                 List<CompletableFuture<Void>> tasks = new ArrayList<>();
