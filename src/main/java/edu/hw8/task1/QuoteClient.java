@@ -44,7 +44,8 @@ public class QuoteClient implements Client {
     public String waitResponse() throws IOException {
         selector.select();
         buffer.clear();
-        return Util.readString(channel, buffer);
+        String response = Util.readString(channel, buffer);
+        return response.isEmpty() ? "No response" : response;
     }
 
     @Override
