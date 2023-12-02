@@ -2,7 +2,6 @@ package edu.hw8.task1;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
-import java.net.SocketException;
 import java.nio.ByteBuffer;
 import java.nio.channels.SelectionKey;
 import java.nio.channels.Selector;
@@ -78,10 +77,9 @@ public class QuoteServer implements Server {
 
     private void read(SelectionKey key) throws IOException {
         SocketChannel client = (SocketChannel) key.channel();
-        String keyword;
-        try {
-            keyword = Util.readString(client, ByteBuffer.allocate(BUFFER_CAPACITY));
-        } catch (SocketException e) {
+        String keyword = Util.readString(client, ByteBuffer.allocate(BUFFER_CAPACITY));
+        if (keyword.isEmpty()) {
+            client.close();
             return;
         }
         List<String> quotes = QuoteRepository.find(keyword);
