@@ -34,7 +34,8 @@ public final class PerformanceMeasurement {
         int bestThreadCount = -1;
         double bestSpeedIncrease = 1;
         for (int threadCount : new int[] {1, 2, 3, 4, 5, 6, 7, 8, 16, 32, 100, 1000}) {
-            long multiThreadedSolution = measure(new MultiThreadedPasswordCracker(alphabet, threadCount), database, maxLength);
+            long multiThreadedSolution =
+                    measure(new MultiThreadedPasswordCracker(alphabet, threadCount), database, maxLength);
             double speedIncrease = (double) singleThreadedTime / multiThreadedSolution;
 
             System.out.println();
