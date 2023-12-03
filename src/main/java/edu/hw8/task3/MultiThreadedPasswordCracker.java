@@ -11,13 +11,19 @@ import java.util.concurrent.Future;
 import java.util.stream.Collectors;
 
 public class MultiThreadedPasswordCracker extends BasePasswordCracker {
+    private final int threads;
+
     public MultiThreadedPasswordCracker(List<Character> alphabet) {
+        this(alphabet, Runtime.getRuntime().availableProcessors());
+    }
+
+    public MultiThreadedPasswordCracker(List<Character> alphabet, int threads) {
         super(alphabet);
+        this.threads = threads;
     }
 
     @Override
     public Map<String, String> crack(Map<String, String> database, int maxLength) {
-        int threads = Runtime.getRuntime().availableProcessors();
         long totalPasswords = passwordsWithLengthUpTo(maxLength);
         long passwordsPerThread = Math.ceilDiv(totalPasswords, threads);
 

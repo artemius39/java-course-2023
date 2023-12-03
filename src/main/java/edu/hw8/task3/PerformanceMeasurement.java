@@ -30,16 +30,36 @@ public final class PerformanceMeasurement {
         long singleThreadedTime = measure(new SingleThreadedPasswordCracker(alphabet), database, maxLength);
         System.out.println("Single-threaded time: " + singleThreadedTime + "ms");
 
-        long multiThreadedTime = measure(new MultiThreadedPasswordCracker(alphabet), database, maxLength);
-        System.out.println("Multi-threaded time: " + multiThreadedTime + "ms");
+        double minTime = singleThreadedTime;
+        int bestThreadCount = -1;
+        double bestSpeedIncrease = 1;
+        for (int threadCount : new int[] {1, 2, 3, 4, 5, 6, 7, 8, 16, 32, 100, 1000}) {
+            long multiThreadedSolution = measure(new MultiThreadedPasswordCracker(alphabet, threadCount), database, maxLength);
+            double speedIncrease = (double) singleThreadedTime / multiThreadedSolution;
 
-        System.out.println("Speed increase: " + (double) singleThreadedTime / multiThreadedTime + " times");
+            System.out.println();
+            System.out.println(threadCount + " thread(s): " + multiThreadedSolution + "ms");
+            System.out.println("Speed increase: " + speedIncrease + " times");
+
+            if (multiThreadedSolution < minTime) {
+                minTime = multiThreadedSolution;
+                bestThreadCount = threadCount;
+                bestSpeedIncrease = speedIncrease;
+            }
+        }
+
+        System.out.println();
+        System.out.println(
+                "Best speed of " + minTime + "ms with speed increase of " + bestSpeedIncrease + " times achieved at "
+                + (bestThreadCount == -1 ? "single threaded solution" : bestThreadCount + " threads"));
     }
 
     private static long measure(PasswordCracker cracker, Map<String, String> database, int maxLength) {
         long startTime = System.nanoTime();
-        cracker.crack(database, maxLength);
-        return (System.nanoTime() - startTime) / 1_000_000;
+        for (int run = 0; run < 10; run++) {
+            cracker.crack(database, maxLength);
+        }
+        return (System.nanoTime() - startTime) / 10_000_000;
     }
 
     private PerformanceMeasurement() {
