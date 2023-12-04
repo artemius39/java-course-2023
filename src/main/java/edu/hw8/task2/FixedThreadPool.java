@@ -1,8 +1,9 @@
 package edu.hw8.task2;
 
 import java.util.Arrays;
+import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.RejectedExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Stream;
@@ -21,7 +22,9 @@ class FixedThreadPool implements ThreadPool {
     @Override
     public void execute(Runnable runnable) {
         try {
-            tasks.put(runnable);
+            if (!tasks.offer(runnable, 1, TimeUnit.SECONDS)) {
+                throw new RejectedExecutionException();
+            }
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
@@ -40,7 +43,7 @@ class FixedThreadPool implements ThreadPool {
     }
 
     FixedThreadPool(int threadCount) {
-        tasks = new LinkedBlockingQueue<>();
+        tasks = new ArrayBlockingQueue<>(threadCount);
         running = new AtomicBoolean();
         threads = Stream.generate(() -> new Thread(() -> {
                     while (running.get() || !tasks.isEmpty()) {

@@ -1,6 +1,7 @@
 package edu.hw8.task2;
 
 import java.util.List;
+import java.util.concurrent.RejectedExecutionException;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Stream;
@@ -9,6 +10,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class FixedThreadPoolTest {
     @Test
@@ -54,16 +56,25 @@ class FixedThreadPoolTest {
     @Timeout(10)
     @DisplayName("More tasks than threads")
     void moreTasksThanThreads() {
-        List<AtomicBoolean> tasks = Stream.generate(AtomicBoolean::new)
-                .limit(10)
+        List<AtomicBoolean> successfulTasks = Stream.generate(AtomicBoolean::new)
+                .limit(3)
+                .toList();
+        List<AtomicBoolean> rejectedTasks = Stream.generate(AtomicBoolean::new)
+                .limit(3)
                 .toList();
 
         try (ThreadPool threadPool = ThreadPool.create(3)) {
-            tasks.forEach(task -> threadPool.execute(() -> task.set(true)));
+            successfulTasks.forEach(task -> threadPool.execute(() -> task.set(true)));
+            rejectedTasks.forEach(
+                    task -> assertThrows(
+                            RejectedExecutionException.class,
+                            () -> threadPool.execute(() -> task.set(true))
+                    )
+            );
             threadPool.start();
         }
 
-        assertThat(tasks).allMatch(AtomicBoolean::get);
+        assertThat(successfulTasks).allMatch(AtomicBoolean::get);
     }
 
     @Test
