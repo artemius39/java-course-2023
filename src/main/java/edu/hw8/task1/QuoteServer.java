@@ -25,7 +25,7 @@ public class QuoteServer implements Server {
 
     private final ExecutorService executorService;
     private final InetSocketAddress address;
-    private boolean running;
+    private Selector selector;
 
     public QuoteServer() {
         this(DEFAULT_HOST, DEFAULT_PORT);
@@ -38,13 +38,16 @@ public class QuoteServer implements Server {
 
     @Override
     public void start() {
-        running = true;
-        try (Selector selector = Selector.open();
-             ServerSocketChannel acceptor = acceptor(selector)) {
-            while (running) {
+        try {
+            selector = Selector.open();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        try (ServerSocketChannel acceptor = acceptor(selector)) {
+            while (selector.isOpen()) {
                 selector.select(TIMEOUT);
-                Set<SelectionKey> keys = selector.selectedKeys();
 
+                Set<SelectionKey> keys = selector.selectedKeys();
                 List<CompletableFuture<Void>> tasks = new ArrayList<>();
                 for (Iterator<SelectionKey> iterator = keys.iterator(); iterator.hasNext(); iterator.remove()) {
                     SelectionKey key = iterator.next();
@@ -73,7 +76,14 @@ public class QuoteServer implements Server {
 
     @Override
     public void shutdown() {
-        running = false;
+        if (selector == null) {
+            throw new IllegalStateException("Shutting down before start");
+        }
+        try {
+            selector.close();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     private void read(SelectionKey key) throws IOException {
