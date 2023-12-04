@@ -45,7 +45,10 @@ public class QuoteServer implements Server {
         }
         try (ServerSocketChannel acceptor = acceptor(selector)) {
             while (selector.isOpen()) {
-                selector.select(TIMEOUT);
+                int selectedKeys = selector.select(TIMEOUT);
+                if (selectedKeys == 0) {
+                    continue;
+                }
 
                 Set<SelectionKey> keys = selector.selectedKeys();
                 List<CompletableFuture<Void>> tasks = new ArrayList<>();
