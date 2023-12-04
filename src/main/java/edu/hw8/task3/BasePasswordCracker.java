@@ -34,8 +34,8 @@ abstract class BasePasswordCracker implements PasswordCracker {
             throw new RuntimeException(e);
         }
 
-        while (generator.hasNextPassword()) {
-            String password = generator.nextPassword();
+        while (generator.hasNext()) {
+            String password = generator.next();
             Hash hash = new Hash(md5.digest(password.getBytes()));
             String user = hashDatabase.get(hash);
             if (user != null) {

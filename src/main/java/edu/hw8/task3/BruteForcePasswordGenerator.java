@@ -47,7 +47,7 @@ class BruteForcePasswordGenerator implements PasswordGenerator {
     }
 
     @Override
-    public String nextPassword() {
+    public String next() {
         String result = password.toString();
 
         int lastIncrementableCharIndex = getLastIncrementableCharIndex();
@@ -70,7 +70,7 @@ class BruteForcePasswordGenerator implements PasswordGenerator {
     }
 
     @Override
-    public boolean hasNextPassword() {
+    public boolean hasNext() {
         return currentPasswordNo < maxPasswordNo;
     }
 

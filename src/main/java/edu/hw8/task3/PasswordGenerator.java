@@ -1,7 +1,6 @@
 package edu.hw8.task3;
 
-public interface PasswordGenerator {
-    String nextPassword();
+import java.util.Iterator;
 
-    boolean hasNextPassword();
+public interface PasswordGenerator extends Iterator<String> {
 }
