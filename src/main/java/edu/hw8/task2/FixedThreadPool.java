@@ -10,6 +10,8 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Stream;
 
 class FixedThreadPool implements ThreadPool {
+    private static final Duration JOIN_TIMEOUT = Duration.ofSeconds(10);
+    private static final int TASK_OFFER_TIMEOUT = 1;
     private final Thread[] threads;
     private final BlockingQueue<Runnable> tasks;
     private final AtomicBoolean running;
@@ -23,7 +25,7 @@ class FixedThreadPool implements ThreadPool {
     @Override
     public void execute(Runnable runnable) {
         try {
-            if (!tasks.offer(runnable, 1, TimeUnit.SECONDS)) {
+            if (!tasks.offer(runnable, TASK_OFFER_TIMEOUT, TimeUnit.SECONDS)) {
                 throw new RejectedExecutionException();
             }
         } catch (InterruptedException e) {
@@ -36,7 +38,7 @@ class FixedThreadPool implements ThreadPool {
         running.set(false);
         for (Thread thread : threads) {
             try {
-                if (!thread.join(Duration.ofSeconds(10))) {
+                if (!thread.join(JOIN_TIMEOUT)) {
                     thread.interrupt();
                 }
             } catch (InterruptedException e) {
@@ -51,7 +53,7 @@ class FixedThreadPool implements ThreadPool {
         threads = Stream.generate(() -> new Thread(() -> {
                     while (running.get() || !tasks.isEmpty()) {
                         try {
-                            Runnable task = tasks.poll(1, TimeUnit.SECONDS);
+                            Runnable task = tasks.poll(TASK_OFFER_TIMEOUT, TimeUnit.SECONDS);
                             if (task != null) {
                                 task.run();
                             }
