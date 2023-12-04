@@ -1,5 +1,6 @@
 package edu.hw8.task2;
 
+import java.time.Duration;
 import java.util.Arrays;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
@@ -35,7 +36,9 @@ class FixedThreadPool implements ThreadPool {
         running.set(false);
         for (Thread thread : threads) {
             try {
-                thread.join();
+                if (!thread.join(Duration.ofSeconds(10))) {
+                    thread.interrupt();
+                }
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }
