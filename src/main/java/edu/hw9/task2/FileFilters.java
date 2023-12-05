@@ -14,15 +14,18 @@ import java.util.concurrent.RecursiveTask;
 import java.util.function.Predicate;
 
 public final class FileFilters {
+
+    private static final String PATH_CANNOT_BE_NULL = "path cannot be null";
+
     public static Collection<Path> directoriesWithMoreThanNFiles(Path path, int n) {
-        Objects.requireNonNull(path, "path cannot be null");
+        Objects.requireNonNull(path, PATH_CANNOT_BE_NULL);
         Collection<Path> directoriesWithMoreThanNFiles = new ConcurrentLinkedQueue<>();
         new DirectoriesWithMoreThanNFilesTask(path, n, directoriesWithMoreThanNFiles).fork().join();
         return directoriesWithMoreThanNFiles;
     }
 
     public static Collection<Path> filter(Path path, Predicate<Path> predicate) {
-        Objects.requireNonNull(path, "path cannot be null");
+        Objects.requireNonNull(path, PATH_CANNOT_BE_NULL);
         Objects.requireNonNull(predicate, "predicate cannot be null");
         Collection<Path> result = new ConcurrentLinkedQueue<>();
         new FilterTask(path, predicate, result).fork().join();

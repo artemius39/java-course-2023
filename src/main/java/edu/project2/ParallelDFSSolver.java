@@ -17,7 +17,7 @@ public class ParallelDFSSolver extends GraphTraversingSolver {
         private final Cell[][] parents;
         private final Maze maze;
 
-        public DFSTask(Cell cell, Cell parent, Cell[][] parents, Maze maze) {
+        DFSTask(Cell cell, Cell parent, Cell[][] parents, Maze maze) {
             this.cell = cell;
             this.parent = parent;
             this.parents = parents;
