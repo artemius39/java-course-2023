@@ -25,12 +25,14 @@ public class StatsCollector {
         executorService = Executors.newFixedThreadPool(THREAD_COUNT);
         futureStats = Stream.generate(() -> executorService.submit(() -> {
                     Map<String, Statistic> stats = new HashMap<>();
-                    while (!executorService.isShutdown() || !tasks.isEmpty()) {
+                    boolean interrupted = false;
+                    while (!interrupted || !tasks.isEmpty()) {
                         Metric metric;
                         try {
                             metric = tasks.poll(1, TimeUnit.SECONDS);
                         } catch (InterruptedException e) {
-                            throw new RuntimeException(e);
+                            interrupted = true;
+                            continue;
                         }
 
                         if (metric != null) {
@@ -55,6 +57,7 @@ public class StatsCollector {
     }
 
     public Map<String, Statistic> stats() {
+        executorService.shutdownNow();
         executorService.close();
         return futureStats.stream()
                 .map(mapFuture -> {
