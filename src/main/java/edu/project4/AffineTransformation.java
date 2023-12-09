@@ -14,7 +14,7 @@ public class AffineTransformation implements Transformation {
     private final double f;
     private final Color color;
 
-    private AffineTransformation(double a, double b, double c, double d, double e, double f, Color color) {
+    public AffineTransformation(double a, double b, double c, double d, double e, double f, Color color) {
         this.a = a;
         this.b = b;
         this.c = c;
