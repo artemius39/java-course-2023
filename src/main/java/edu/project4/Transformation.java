@@ -14,6 +14,7 @@ import static java.lang.Math.sin;
 import static java.lang.Math.sinh;
 import static java.lang.Math.sqrt;
 
+@SuppressWarnings("unused")
 public interface Transformation extends Function<Point, Point> {
     Transformation SINUSOIDAL = coordinateWise((x, y) -> new Point(sin(x), sin(y)));
     Transformation SWIRL = coordinateWise((x, y) -> {
