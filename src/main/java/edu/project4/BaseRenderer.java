@@ -17,8 +17,7 @@ abstract class BaseRenderer implements Renderer {
                           int symmetry) {
         Point point = getRandomPoint();
         Color color = null;
-        for (int iteration = -ITERATIONS_WITHOUT_PLOTTING; iteration < iterationsPerSample;
-             iteration++) {
+        for (int iteration = -ITERATIONS_WITHOUT_PLOTTING; iteration < iterationsPerSample; iteration++) {
             AffineTransformation affineTransformation = choose(transformations);
             Transformation variation = choose(variations);
 
@@ -55,10 +54,10 @@ abstract class BaseRenderer implements Renderer {
             throw new IllegalArgumentException("symmetry number must be positive");
         }
         if (width <= 0) {
-            throw new IllegalArgumentException("width count must be positive");
+            throw new IllegalArgumentException("width must be positive");
         }
         if (height <= 0) {
-            throw new IllegalArgumentException("height count must be positive");
+            throw new IllegalArgumentException("height must be positive");
         }
     }
 
@@ -120,7 +119,6 @@ abstract class BaseRenderer implements Renderer {
     }
 
     protected static class PixelBuilder {
-
         private Color color;
         private int hitCount;
 

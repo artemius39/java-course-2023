@@ -73,10 +73,6 @@ public interface Transformation extends Function<Point, Point> {
         return new Point(k * cos(theta / 2 + omega), k * sin(theta / 2 + omega));
     });
 
-    private static double omega() {
-        return ThreadLocalRandom.current().nextBoolean() ? 0 : PI;
-    }
-
     Transformation EX = coordinateWise((x, y) -> {
         double r = r(x, y);
         double theta = theta(x, y);
@@ -86,6 +82,7 @@ public interface Transformation extends Function<Point, Point> {
         double p1cubed = p1 * p1 * p1;
         return new Point(r * (p0cubed + p1cubed), r * (p0cubed - p1cubed));
     });
+
     Transformation DIAMOND = coordinateWise((x, y) -> {
         double theta = theta(x, y);
         double r = r(x, y);
@@ -112,7 +109,6 @@ public interface Transformation extends Function<Point, Point> {
         double theta = theta(x, y);
         return new Point(r * sin(theta + r), r * cos(theta - r));
     });
-
     private static double sq(double a) {
         return a * a;
     }
@@ -127,6 +123,10 @@ public interface Transformation extends Function<Point, Point> {
 
     private static double theta(Double x, Double y) {
         return atan2(x, y);
+    }
+
+    private static double omega() {
+        return ThreadLocalRandom.current().nextBoolean() ? 0 : PI;
     }
 
     static Transformation coordinateWise(BiFunction<Double, Double, Point> function) {
