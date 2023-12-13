@@ -22,19 +22,19 @@ public final class CacheProxy {
         return (T) Proxy.newProxyInstance(
                 clazz.getClassLoader(),
                 clazz.getInterfaces(),
-                new MyInvocationHandler(target, persistentStoragePath)
+                new CachingInvocationHandler(target, persistentStoragePath)
         );
     }
 
     private CacheProxy() {
     }
 
-    private static class MyInvocationHandler implements InvocationHandler {
+    private static class CachingInvocationHandler implements InvocationHandler {
         private final Object target;
         private final Map<Method, Map<List<Object>, Object>> transientStorage;
         private final Path persistentStoragePath;
 
-        MyInvocationHandler(Object target, Path persistentStoragePath) {
+        CachingInvocationHandler(Object target, Path persistentStoragePath) {
             this.target = target;
             this.transientStorage = new HashMap<>();
             this.persistentStoragePath = persistentStoragePath;
