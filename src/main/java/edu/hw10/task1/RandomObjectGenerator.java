@@ -13,18 +13,29 @@ import java.util.Optional;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.function.Supplier;
 
+@SuppressWarnings("checkstyle:MultipleStringLiterals")
 public class RandomObjectGenerator {
     private static final Map<Class<?>, Supplier<?>> PRIMITIVE_GENERATORS = Map.of(
             boolean.class, () -> ThreadLocalRandom.current().nextBoolean(),
             long.class, () -> ThreadLocalRandom.current().nextLong(),
             int.class, () -> ThreadLocalRandom.current().nextInt(),
-            short.class, () -> (short) ThreadLocalRandom.current().nextInt(Short.MIN_VALUE, ((int) Short.MAX_VALUE) + 1),
-            byte.class, () -> (byte) ThreadLocalRandom.current().nextInt(Byte.MIN_VALUE, ((int) Byte.MAX_VALUE) + 1),
-            char.class, () -> (char) ThreadLocalRandom.current().nextInt(Character.MIN_VALUE, ((int) Character.MAX_VALUE) + 1),
+            short.class, () -> (short) ThreadLocalRandom.current().nextInt(
+                    Short.MIN_VALUE,
+                    ((int) Short.MAX_VALUE) + 1
+            ),
+            byte.class, () -> (byte) ThreadLocalRandom.current().nextInt(
+                    Byte.MIN_VALUE,
+                    ((int) Byte.MAX_VALUE) + 1
+            ),
+            char.class, () -> (char) ThreadLocalRandom.current().nextInt(
+                    Character.MIN_VALUE,
+                    ((int) Character.MAX_VALUE) + 1
+            ),
             double.class, () -> ThreadLocalRandom.current().nextDouble(),
             float.class, () -> ThreadLocalRandom.current().nextFloat()
     );
     private static final int MAX_ARRAY_SIZE = 100;
+    private static final int NULL_CHANCE = 100;
 
     private Optional<?> generateBasicType(Class<?> clazz, Annotation[] annotations) {
         if (clazz.equals(int.class)) {
@@ -87,7 +98,7 @@ public class RandomObjectGenerator {
             return (T) optionalObject.get();
         }
         if (Arrays.stream(annotations).noneMatch(annotation -> annotation.annotationType().equals(NotNull.class))) {
-            if (ThreadLocalRandom.current().nextInt(100) == 0) {
+            if (ThreadLocalRandom.current().nextInt(NULL_CHANCE) == 0) {
                 return null;
             }
         }

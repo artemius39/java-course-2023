@@ -1,5 +1,6 @@
 package edu.hw10.task2;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
@@ -14,9 +15,8 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
-public class CacheProxy {
+public final class CacheProxy {
     public static <T> T create(T target, Class<? extends T> clazz, Path persistentStoragePath) {
         //noinspection unchecked
         return (T) Proxy.newProxyInstance(
@@ -26,12 +26,15 @@ public class CacheProxy {
         );
     }
 
+    private CacheProxy() {
+    }
+
     private static class MyInvocationHandler implements InvocationHandler {
         private final Object target;
         private final Map<Method, Map<List<Object>, Object>> transientStorage;
         private final Path persistentStoragePath;
 
-        public MyInvocationHandler(Object target, Path persistentStoragePath) {
+        MyInvocationHandler(Object target, Path persistentStoragePath) {
             this.target = target;
             this.transientStorage = new HashMap<>();
             this.persistentStoragePath = persistentStoragePath;
