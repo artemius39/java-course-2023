@@ -36,7 +36,7 @@ public class ReflectionBenchmark {
                 .warmupIterations(1)
                 .warmupTime(TimeValue.seconds(5))
                 .measurementIterations(1)
-                .measurementTime(TimeValue.seconds(5))
+                .measurementTime(TimeValue.minutes(3))
                 .build();
 
         new Runner(options).run();
