@@ -17,7 +17,7 @@ class HelloByteBuddyTest {
             throws NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException {
         try (DynamicType.Unloaded<Object> dynamicType = new ByteBuddy()
                 .subclass(Object.class)
-                .method(ElementMatchers.named("toString"))
+                .method(ElementMatchers.isToString())
                 .intercept(FixedValue.value("Hello, ByteBuddy!"))
                 .make()) {
             Class<?> clazz = dynamicType.load(getClass().getClassLoader())
